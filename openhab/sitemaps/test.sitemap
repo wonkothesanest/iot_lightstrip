@@ -1,0 +1,4 @@
+sitemap demo label="My home automation" {
+    Switch item=light
+    Colorpicker item=LivSoffitLightColor
+}

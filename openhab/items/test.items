@@ -1,0 +1,8 @@
+Number Himitsu_Temp "Himitsu Temperature [%.1f °C]" <temperature> (Himitsu,Temperature) {mqtt="<[openhab:openhab/himitsu/temperature:state:default]"}
+Number Himitsu_Humidity "Himitsu Humidity [%.1f %%]" <water> (Himitsu,Humidity) {mqtt="<[openhab:openhab/himitsu/humidity:state:default]"}
+Switch light "Light Strip" {mqtt=">[openhab:light/cmd:command:ON:1],>[openhab:light/cmd:command:OFF:0],<[openhab:light/state:state:default]"}
+
+Color LivSoffitLight "Living Room Soffit Color" (Lights_LivingRoom)
+String LivSoffitLightColor (Lights_LivingRoom) {mqtt=">[openhab:light/color:command:*:default]"}
+Number LivSoffitAnimation "Living Room Soffit Animation" (Lights_LivingRoom) {mqtt=">[openhab:light/animation:command:*:default]"}
+
