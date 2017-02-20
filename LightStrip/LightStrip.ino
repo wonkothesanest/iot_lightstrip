@@ -1,5 +1,4 @@
-#include <Servo.h>
-
+#include <Button.h>
 
 //Libraries
 #include <ESP8266WiFi.h>
@@ -12,7 +11,7 @@ const String itemName = "dustin_bedroom_desk_light";
 //Network information
 const char *ssid = "ASUS";
 const char *pass = "alamoana";
-const char *mqtt_server = "osmc";
+const char *mqtt_server = "192.168.1.198";
 
 //MQTT topics
 const String mqttInputOnOffCommand = "openhab/out/" + itemName + "/command";
@@ -27,8 +26,8 @@ const String mqttOutputMotionState = "openhab/in/" + itemName + "_motion/state";
 #define PGREEN 14
 #define PBLUE 13
 #define pBtnColor 15
-#define pBtnOnOff 2
-#define pMotionDetector 0
+#define pBtnOnOff 0
+#define pMotionDetector 2
 #define pSonarPing 4
 #define pSonarPong 4
 
@@ -42,6 +41,12 @@ volatile bool is_on = false;
 volatile unsigned long lastBtnPress = 0;
 const unsigned long BtbDebounceTime = 50;
 volatile int lastColorSelectedIndex = -1;
+volatile bool change_onoff = false;
+volatile bool change_color = false;
+
+Button btn_onoff(pBtnColor);
+Button btn_color(pBtnOnOff);
+
 
 //List of static colors
 const int numColors = 7;
@@ -51,6 +56,7 @@ WiFiClient net;
 MQTTClient client;
 
 void connect(); // <- predefine connect() for setup()
+
 
 void setup() {
   Serial.begin(9600);
@@ -67,11 +73,13 @@ void setup() {
   pinMode(pMotionDetector, INPUT);
 
   //Interrupt for Buttons
-  attachInterrupt(digitalPinToInterrupt(pBtnColor), pin_ISR_COLOR, FALLING);
-  attachInterrupt(digitalPinToInterrupt(pBtnOnOff), pin_ISR_ONOFF, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(pBtnColor), pin_ISR_COLOR, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(pBtnOnOff), pin_ISR_ONOFF, FALLING);
 
   //Interrupt for Motion detector
-  attachInterrupt(digitalPinToInterrupt(pMotionDetector), pin_ISR_MOTION, RISING);
+  //attachInterrupt(digitalPinToInterrupt(pMotionDetector), pin_ISR_MOTION, RISING);
+  btn_onoff.begin();
+  btn_color.begin();
 
   connect();
 }
@@ -104,10 +112,27 @@ void loop() {
     connect();
   }
 
+  //Handle button states
+  if(btn_onoff.released()){
+    changeLEDs();
+
+  }
+
+  if(btn_color.released()){
+    if(is_on){
+      turnOffLight();
+    }else{
+      changeLEDs();
+    }
+
+  }
+
+
   //Delay a minute?
-  delay(10000);
+  //delay(100);
 
 }
+
 
 //uses valuue of last_rgb
 void changeLEDs(){
@@ -142,7 +167,7 @@ void messageReceived(String topic, String payload, char * bytes, unsigned int le
   Serial.print(" - ");
   Serial.print(payload);
   Serial.println();
-  if(topic == mqttInputColorCommand){
+  if(topic == mqttInputOnOffCommand){
     if(payload == "0"){
       Serial.println("Turning light off");
       turnOffLight();
@@ -167,43 +192,4 @@ void messageReceived(String topic, String payload, char * bytes, unsigned int le
     Serial.println(last_rgb[2]);
     changeLEDs();
   }
-}
-
-void pin_ISR_COLOR() {
-
-  //Change color
-  if(millis() >= lastBtnPress + BtbDebounceTime){
-    if(lastColorSelectedIndex<0 || lastColorSelectedIndex >= numColors - 1){
-      lastColorSelectedIndex = 0;
-    }else{
-      lastColorSelectedIndex++;
-    }
-
-    last_rgb[0] = (int)colors[lastColorSelectedIndex][0];
-    last_rgb[1] = (int)colors[lastColorSelectedIndex][1];
-    last_rgb[2] = (int)colors[lastColorSelectedIndex][2];
-    changeLEDs();
-
-  }
-
-  lastBtnPress = millis();
-}
-
-void pin_ISR_ONOFF() {
-
-  //Change state
-  if(millis() >= lastBtnPress + BtbDebounceTime){
-    if(is_on){
-      turnOffLight();
-    }else{
-      changeLEDs();
-    }
-  }
-
-  lastBtnPress = millis();
-}
-
-void pin_ISR_MOTION(){
-  Serial.println("Motion detected");
-  client.publish(mqttOutputMotionState, "ON");
 }
