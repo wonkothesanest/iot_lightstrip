@@ -164,14 +164,14 @@ void motionDetected(){
 
 void cycleColors(){
   Serial.println("Cycle Colors");
-  if(lastColorSelectedIndex < 0 || lastColorSelectedIndex >= numColors-2){
+  if(lastColorSelectedIndex < 0 || lastColorSelectedIndex >= numColors-1){
     lastColorSelectedIndex = 0;
   }else{
     lastColorSelectedIndex++;
   }
-  last_rgb[0] = colors[lastColorSelectedIndex][0];
-  last_rgb[1] = colors[lastColorSelectedIndex][1];
-  last_rgb[2] = colors[lastColorSelectedIndex][2];
+  last_rgb[0] = colors[lastColorSelectedIndex][0]*.5*pwm_max;
+  last_rgb[1] = colors[lastColorSelectedIndex][1]*.5*pwm_max;
+  last_rgb[2] = colors[lastColorSelectedIndex][2]*.5*pwm_max;
   changeLEDs();
 
 }
