@@ -1,22 +1,39 @@
-// This example uses an Adafruit Huzzah ESP8266
-// to connect to shiftr.io.
-//
-// You can check on your device after a successful
-// connection here: https://shiftr.io/try.
-//
-// by Joël Gähwiler
-// https://github.com/256dpi/arduino-mqtt
+#include <Servo.h>
 
+
+//Libraries
 #include <ESP8266WiFi.h>
 #include <MQTTClient.h>
 #include <HSBColor.h>
 
+//Network information
 const char *ssid = "ASUS";
 const char *pass = "alamoana";
+const char *mqtt_server = "osmc";
+const String itemName = "dustin_bedroom_desk_light";
 
+//MQTT topics
+const String mqttInputOnOffCommand = "openhab/out/" + itemName + "/command";
+const String mqttInputColorCommand = "openhab/out/" + itemName + "_color/command";
+const String mqttOutputOnOffState = "openhab/in/" + itemName + "/state";
+const String mqttOutputColorState = "openhab/in/" + itemName + "_color/state";
+
+
+//Pins
 #define PRED 12
 #define PGREEN 14
 #define PBLUE 13
+#define pBtnColor 15
+#define pBtnOnOff 2
+#define pMotionDetector 0
+#define pSonarPing 4
+#define pSonarPong 4
+
+//Variables for state
+//Actual pwm max is 1023, for power consumption we limit to:
+uint16_t pwm_max = 900;
+int last_rgb[3] = {pwm_max, pwm_max, pwm_max};
+
 
 WiFiClient net;
 MQTTClient client;
@@ -28,8 +45,8 @@ void connect(); // <- predefine connect() for setup()
 void setup() {
   Serial.begin(9600);
   WiFi.begin(ssid, pass);
-  client.begin("192.168.1.198", net);
-  
+  client.begin(mqtt_server, net);
+
   pinMode(PRED, OUTPUT);
   pinMode(PGREEN, OUTPUT);
   pinMode(PBLUE, OUTPUT);
@@ -53,10 +70,9 @@ void connect() {
 
   Serial.println("\nconnected!");
 
-  client.subscribe("/example");
-  client.subscribe("light/cmd");
-  client.subscribe("light/color");
-  // client.unsubscribe("/example");
+  //Subscribe to commands coming from Openhab for changes in color
+  client.subscribe(mqttInputOnOffCommand);
+  client.subscribe(mqttInputColorCommand);
 }
 
 void loop() {
@@ -67,11 +83,23 @@ void loop() {
     connect();
   }
 
-  // publish a message roughly every second.
-  if(millis() - lastMillis > 1000) {
-    lastMillis = millis();
-    client.publish("/hello", "world");
-  }
+  //Delay a minute?
+  delay(10000);
+
+}
+
+//uses valuue of last_rgb
+void changeLEDs(){
+  analogWrite(PRED, last_rgb[0]);
+  analogWrite(PGREEN, last_rgb[1]);
+  analogWrite(PBLUE, last_rgb[2]);
+
+  //convert to HSB
+  int hsb[3];
+  H2R_RGBtoHSB((int*)&last_rgb,  (int*)&hsb);
+  String s = String(hsb[0]) + "," + String(hsb[1]) + "," + String(hsb[2]);
+  client.publish(mqttOutputColorState, s);
+  client.publish(mqttOutputOnOffState, "ON");
 }
 
 void messageReceived(String topic, String payload, char * bytes, unsigned int length) {
@@ -80,37 +108,31 @@ void messageReceived(String topic, String payload, char * bytes, unsigned int le
   Serial.print(" - ");
   Serial.print(payload);
   Serial.println();
-  if(topic == "light/cmd"){
+  if(topic == mqttInputColorCommand){
     if(payload == "0"){
       Serial.println("Turning light off");
       analogWrite(PRED, 0);
       analogWrite(PGREEN, 0);
       analogWrite(PBLUE, 0);
-      client.publish("light/state", "OFF");
+      client.publish(mqttOutputOnOffState, "OFF");
     }else if(payload == "1"){
       Serial.println("Turning Light On");
-      analogWrite(PRED, 1000);
-      analogWrite(PGREEN, 1000);
-      analogWrite(PBLUE, 1000);
-      client.publish("light/state", "ON");
+      changeLEDs();
     }else{
       Serial.println("I really dont know what to do");
     }
-  }else if(topic=="light/color"){
+  }else if(topic==mqttInputColorCommand){
     String value=payload;
     int SoffitR = value.substring(0,value.indexOf(',')).toInt();
     int SoffitG = value.substring(value.indexOf(',')+1,value.lastIndexOf(',')).toInt();
     int SoffitB = value.substring(value.lastIndexOf(',')+1).toInt();
-    int rgb[3];
-    H2R_HSBtoRGB(SoffitR, SoffitG, SoffitB, (int*)&rgb);
+    H2R_HSBtoRGB(SoffitR, SoffitG, SoffitB, (int*)&last_rgb);
     Serial.print("R ");
-    Serial.println(rgb[0]);
+    Serial.println(last_rgb[0]);
     Serial.print("G ");
-    Serial.println(rgb[1]);
+    Serial.println(last_rgb[1]);
     Serial.print("B ");
-    Serial.println(rgb[2]);
-    analogWrite(PRED, rgb[0]);
-    analogWrite(PGREEN, rgb[1]);
-    analogWrite(PBLUE, rgb[2]);
+    Serial.println(last_rgb[2]);
+    changeLEDs();
   }
 }
