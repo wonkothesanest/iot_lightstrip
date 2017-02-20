@@ -25,27 +25,22 @@ const String mqttOutputMotionState = "openhab/in/" + itemName + "_motion/state";
 #define PRED 12
 #define PGREEN 14
 #define PBLUE 13
-#define pBtnColor 15
+#define pBtnColor 2
 #define pBtnOnOff 0
-#define pMotionDetector 2
-#define pSonarPing 4
-#define pSonarPong 4
+#define pMotionDetector 4
+#define pSonarPing 5
+#define pSonarPong 5
 
 //Variables for state
 //Actual pwm max is 1023, for power consumption we limit to:
 const uint16_t pwm_max = 900;
 volatile int last_rgb[3] = {pwm_max, pwm_max, pwm_max};
-volatile int btn_onoff_state = 0;
-volatile int btn_color_state = 0;
 volatile bool is_on = false;
-volatile unsigned long lastBtnPress = 0;
-const unsigned long BtbDebounceTime = 50;
-volatile int lastColorSelectedIndex = -1;
-volatile bool change_onoff = false;
-volatile bool change_color = false;
+int lastColorSelectedIndex = -1;
 
-Button btn_onoff(pBtnColor);
-Button btn_color(pBtnOnOff);
+Button btn_onoff(pBtnOnOff);
+Button btn_color(pBtnColor);
+Button motion_detector(pMotionDetector);
 
 
 //List of static colors
@@ -80,6 +75,7 @@ void setup() {
   //attachInterrupt(digitalPinToInterrupt(pMotionDetector), pin_ISR_MOTION, RISING);
   btn_onoff.begin();
   btn_color.begin();
+  motion_detector.begin();
 
   connect();
 }
@@ -113,12 +109,12 @@ void loop() {
   }
 
   //Handle button states
-  if(btn_onoff.released()){
-    changeLEDs();
+  if(btn_color.released()){
+    cycleColors();
 
   }
 
-  if(btn_color.released()){
+  if(btn_onoff.released()){
     if(is_on){
       turnOffLight();
     }else{
@@ -127,9 +123,9 @@ void loop() {
 
   }
 
-
-  //Delay a minute?
-  //delay(100);
+  if(motion_detector.pressed()){
+    motionDetected();
+  }
 
 }
 
@@ -161,6 +157,25 @@ void turnOffLight(){
 
 }
 
+void motionDetected(){
+  Serial.println("Motion Detected");
+  client.publish(mqttOutputMotionState, "ON");
+}
+
+void cycleColors(){
+  Serial.println("Cycle Colors");
+  if(lastColorSelectedIndex < 0 || lastColorSelectedIndex >= numColors-2){
+    lastColorSelectedIndex = 0;
+  }else{
+    lastColorSelectedIndex++;
+  }
+  last_rgb[0] = colors[lastColorSelectedIndex][0];
+  last_rgb[1] = colors[lastColorSelectedIndex][1];
+  last_rgb[2] = colors[lastColorSelectedIndex][2];
+  changeLEDs();
+
+}
+
 void messageReceived(String topic, String payload, char * bytes, unsigned int length) {
   Serial.print("incoming: ");
   Serial.print(topic);
@@ -168,11 +183,11 @@ void messageReceived(String topic, String payload, char * bytes, unsigned int le
   Serial.print(payload);
   Serial.println();
   if(topic == mqttInputOnOffCommand){
-    if(payload == "0"){
+    if(payload == "OFF" || payload == "0"){
       Serial.println("Turning light off");
       turnOffLight();
 
-    }else if(payload == "1"){
+    }else if(payload == "ON" || payload == "1"){
       Serial.println("Turning Light On");
       changeLEDs();
     }else{
@@ -184,12 +199,6 @@ void messageReceived(String topic, String payload, char * bytes, unsigned int le
     int SoffitG = value.substring(value.indexOf(',')+1,value.lastIndexOf(',')).toInt();
     int SoffitB = value.substring(value.lastIndexOf(',')+1).toInt();
     H2R_HSBtoRGB(SoffitR, SoffitG, SoffitB, (int*)&last_rgb);
-    Serial.print("R ");
-    Serial.println(last_rgb[0]);
-    Serial.print("G ");
-    Serial.println(last_rgb[1]);
-    Serial.print("B ");
-    Serial.println(last_rgb[2]);
     changeLEDs();
   }
 }

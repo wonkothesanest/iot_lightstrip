@@ -37,7 +37,9 @@ void RGBtoHSV( float r, float g, float b, float *h, float *s, float *v )
 		return;
 	}
 
-	if( r == max )
+	if(delta == 0){
+		*h = 0;
+	}else	if( r == max )
 		*h = ( g - b ) / delta;		// between yellow & magenta
 	else if( g == max )
 		*h = 2 + ( b - r ) / delta;	// between cyan & yellow
