@@ -46,6 +46,27 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="cdt.managedbuild.toolchain.gnu.cross.base.585818038.2083753391" name="/" resourcePath="main/drivers">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.base.87085725" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.base" unusedChildren="">
+							<option id="cdt.managedbuild.option.gnu.cross.prefix.291217704.2096098816" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix.291217704"/>
+							<option id="cdt.managedbuild.option.gnu.cross.path.552533047.1385808571" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path.552533047"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1650817451" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler.443814265">
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1094732150" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1516538207" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.408674881">
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.676089248" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.245092772" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker.452561309"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.336861335" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker.541146862"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.2004701610" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver.1091384924"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.226235289" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler.596238798">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1266975768" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -70,4 +91,24 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
+		<buildTargets>
+			<target name="flash" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildArguments/>
+				<buildTarget>flash</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="monitor" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildArguments/>
+				<buildTarget>monitor</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+		</buildTargets>
+	</storageModule>
 </cproject>
