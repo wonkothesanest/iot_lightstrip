@@ -16,12 +16,15 @@
 #include "esp_event_loop.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
+#include "tcpip_adapter.h"
 
 #include "lwip/err.h"
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 #include "lwip/dns.h"
+
+#include "mdns.h"
 
 #include "sys/socket.h"
 #include "sdkconfig.h"
@@ -34,6 +37,8 @@ static const char *TAG = "simple wifi";
 #define WEB_SERVER "example.com"
 #define WEB_PORT 80
 #define WEB_URL "http://example.com/"
+#define MDNS_HOSTNAME "esp32-device"
+#define MDNS_INSTANCE_NAME "ESP32 Deviceo"
 
 
 
@@ -48,7 +53,7 @@ static const char *REQUEST = "GET " WEB_URL " HTTP/1.0\r\n"
    to the AP with an IP? */
 const int WIFI_CONNECTED_BIT = BIT0;
 
-static void vWaitForWifiConnection(){
+void vWaitForWifiConnection(){
     xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_BIT,
                         false, true, portMAX_DELAY);
 }
@@ -81,6 +86,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
 	default:
 		break;
 	}
+    mdns_handle_system_event(ctx, event);
 	return ESP_OK;
 }
 
@@ -186,15 +192,14 @@ static void http_get_task(void *pvParameters)
     }
 }
 
-void wifi_init_sta() {
-	wifi_event_group = xEventGroupCreate();
+static void wifi_init_sta(void) {
 
 	tcpip_adapter_init();
+	wifi_event_group = xEventGroupCreate();
 	ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
-
-	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT()
-	;
+	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
 	wifi_config_t wifi_config = {
 			.sta = {
 					.ssid = EXAMPLE_ESP_WIFI_SSID,
@@ -202,6 +207,7 @@ void wifi_init_sta() {
 			},
 	};
 
+    ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
 	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
 	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
 	ESP_ERROR_CHECK(esp_wifi_start());
@@ -211,16 +217,63 @@ void wifi_init_sta() {
 //	EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
 }
 
+static void initialise_mdns(void)
+{
+    //initialize mDNS
+    ESP_ERROR_CHECK( mdns_init() );
+    //set mDNS hostname (required if you want to advertise services)
+    ESP_ERROR_CHECK( mdns_hostname_set(MDNS_HOSTNAME) );
+    //set default mDNS instance name
+    ESP_ERROR_CHECK( mdns_instance_name_set(MDNS_INSTANCE_NAME) );
+
+    //structure with TXT records
+
+    mdns_txt_item_t serviceTxtData[3] = {
+        {"board","esp32"},
+        {"u","user"},
+        {"p","password"}
+    };
+
+    //initialize service
+    ESP_ERROR_CHECK( mdns_service_add("ESP32-WebServer", "_http", "_tcp", 80, serviceTxtData, 3) );
+    //add another TXT item
+    ESP_ERROR_CHECK( mdns_service_txt_item_set("_http", "_tcp", "path", "/foobar") );
+    //change TXT item value
+    ESP_ERROR_CHECK( mdns_service_txt_item_set("_http", "_tcp", "u", "admin") );
+
+}
+static void query_mdns_host(const char * host_name)
+{
+    ESP_LOGI(TAG, "Query A: %s.local", host_name);
+
+    struct ip4_addr addr;
+    addr.addr = 0;
+
+    esp_err_t err = mdns_query_a(host_name, 6000,  &addr);
+    if(err){
+        if(err == ESP_ERR_NOT_FOUND){
+            ESP_LOGW(TAG, "%s: Host was not found!", esp_err_to_name(err));
+            return;
+        }
+        ESP_LOGE(TAG, "Query Failed: %s", esp_err_to_name(err));
+        return;
+    }
+
+    ESP_LOGI(TAG, IPSTR, IP2STR(&addr));
+}
+
 void wifi_start() {
 	//Initialize NVS
-	esp_err_t ret = nvs_flash_init();
-	if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
-		ESP_ERROR_CHECK(nvs_flash_erase());
-		ret = nvs_flash_init();
-	}
-	ESP_ERROR_CHECK(ret);
+    ESP_ERROR_CHECK( nvs_flash_init() );
 
-	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
+	initialise_mdns();
 	wifi_init_sta();
+
+
+	vWaitForWifiConnection();
+	while(1){
+		query_mdns_host("osmc");
+		vTaskDelay(10000/portTICK_PERIOD_MS);
+	}
 }
 

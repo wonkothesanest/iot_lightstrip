@@ -15,6 +15,8 @@
 
 #include "driver/wifi.h"
 #include "driver/blink.h"
+#include "driver/mqtt_test.h"
+#include "sdkconfig.h"
 //#include "FreeRTOSConfig.h"
 
 #define BLINK_GPIO 2
@@ -25,8 +27,10 @@ void app_main()
     printf("Hello world!\n");
 
     wifi_start();
+//    start_mqtt();
 
     blink_start();
+
 
     for(;;){
     	vTaskDelay(10000/portTICK_PERIOD_MS);

@@ -31,7 +31,8 @@
 */
 
 
-static void vWaitForWifiConnection();
+void vWaitForWifiConnection();
+
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t wifi_event_group;
 

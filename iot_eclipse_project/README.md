@@ -1,5 +1,7 @@
-# Hello World Example
+# IOT Home Project
+Implementation of best practices for IoT devices.  Used in my home and in a state of update.
 
-Starts a FreeRTOS task to print "Hello World"
+## Additional Resources used to extend esp-idf
+https://github.com/tuanpmt/espmqtt
 
-See the README.md file in the upper level 'examples' directory for more information about examples.
+
