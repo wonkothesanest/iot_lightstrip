@@ -74,10 +74,7 @@
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/wear_levelling/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/wpa_supplicant/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/xtensa-debug-module/include"/>
-									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/freertos/include"/>
-									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esp32/include"/>
-									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/spi_flash/include"/>
-									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/driver/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/lwip/include/lwip"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.88718426" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>

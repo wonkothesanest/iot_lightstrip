@@ -18,21 +18,22 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 
-#include "lwip/err.h"
-#include "lwip/sys.h"
 
-
-#define EXAMPLE_ESP_WIFI_MODE_AP   CONFIG_ESP_WIFI_MODE_AP //TRUE:AP FALSE:STA
 #define EXAMPLE_ESP_WIFI_SSID      CONFIG_ESP_WIFI_SSID
 #define EXAMPLE_ESP_WIFI_PASS      CONFIG_ESP_WIFI_PASSWORD
 #define EXAMPLE_MAX_STA_CONN       CONFIG_MAX_STA_CONN
 
 /*
 #define EXAMPLE_ESP_WIFI_MODE_AP   false //TRUE:AP FALSE:STA
-#define EXAMPLE_ESP_WIFI_SSID      "Steven Universe"
-#define EXAMPLE_ESP_WIFI_PASS      "GemsRock"
+#define EXAMPLE_ESP_WIFI_SSID      "StevenUniverse"
+#define EXAMPLE_ESP_WIFI_PASS      "gemsrock"
 #define EXAMPLE_MAX_STA_CONN       4 //CONFIG_MAX_STA_CONN
 */
+
+
+static void vWaitForWifiConnection();
+/* FreeRTOS event group to signal when we are connected*/
+static EventGroupHandle_t wifi_event_group;
 
 
 

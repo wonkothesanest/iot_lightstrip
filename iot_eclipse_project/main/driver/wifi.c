@@ -17,19 +17,17 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 
-#include "lwip/lwip/err.h"
-#include "lwip/lwip/sockets.h"
-#include "lwip/lwip/sys.h"
-#include "lwip/lwip/netdb.h"
-#include "lwip/lwip/dns.h"
+#include "lwip/err.h"
+#include "lwip/sockets.h"
+#include "lwip/sys.h"
+#include "lwip/netdb.h"
+#include "lwip/dns.h"
 
 #include "sys/socket.h"
 #include "sdkconfig.h"
 #include "errno.h"
+#include "config.h"
 
-#define BIT0 0x00000001
-#define BIT1 0x00000002
-#define BIT2 0x00000004
 
 static const char *TAG = "simple wifi";
 /* Constants that aren't configurable in menuconfig */
@@ -50,8 +48,10 @@ static const char *REQUEST = "GET " WEB_URL " HTTP/1.0\r\n"
    to the AP with an IP? */
 const int WIFI_CONNECTED_BIT = BIT0;
 
-/* FreeRTOS event group to signal when we are connected*/
-static EventGroupHandle_t wifi_event_group;
+static void vWaitForWifiConnection(){
+    xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_BIT,
+                        false, true, portMAX_DELAY);
+}
 
 
 static esp_err_t event_handler(void *ctx, system_event_t *event) {
@@ -84,6 +84,12 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
 	return ESP_OK;
 }
 
+/**
+ * Example function to show how to make an http get
+ * Tested works with
+ *     xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 5, NULL);
+ *
+ */
 static void http_get_task(void *pvParameters)
 {
 	ESP_LOGI(TAG, "Starting http_get_task");
@@ -180,33 +186,6 @@ static void http_get_task(void *pvParameters)
     }
 }
 
-
-void wifi_init_softap() {
-	wifi_event_group = xEventGroupCreate();
-
-	tcpip_adapter_init();
-	ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
-
-	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT()
-	;
-	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-	wifi_config_t wifi_config =
-			{ .ap = { .ssid = EXAMPLE_ESP_WIFI_SSID, .ssid_len = strlen(
-					EXAMPLE_ESP_WIFI_SSID), .password = EXAMPLE_ESP_WIFI_PASS,
-					.max_connection = EXAMPLE_MAX_STA_CONN, .authmode =
-							WIFI_AUTH_WPA_WPA2_PSK }, };
-	if (strlen(EXAMPLE_ESP_WIFI_PASS) == 0) {
-		wifi_config.ap.authmode = WIFI_AUTH_OPEN;
-	}
-
-	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
-	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &wifi_config));
-	ESP_ERROR_CHECK(esp_wifi_start());
-
-	ESP_LOGI(TAG, "wifi_init_softap finished.SSID:%s password:%s",
-	EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
-}
-
 void wifi_init_sta() {
 	wifi_event_group = xEventGroupCreate();
 
@@ -241,14 +220,7 @@ void wifi_start() {
 	}
 	ESP_ERROR_CHECK(ret);
 
-#if EXAMPLE_ESP_WIFI_MODE_AP
-	ESP_LOGI(TAG, "ESP_WIFI_MODE_AP");
-	wifi_init_softap();
-#else
 	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
 	wifi_init_sta();
-	ESP_LOGI(TAG, "ESP_WIFI creating httpget task");
-    xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 5, NULL);
-#endif /*EXAMPLE_ESP_WIFI_MODE_AP*/
 }
 
