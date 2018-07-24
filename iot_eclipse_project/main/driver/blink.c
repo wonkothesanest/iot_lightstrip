@@ -4,7 +4,7 @@
  *  Created on: Jul 23, 2018
  *      Author: dustin
  */
-#include "driver_blink.h"
+#include "blink.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
