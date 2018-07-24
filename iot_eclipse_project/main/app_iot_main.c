@@ -13,9 +13,9 @@
 #include "esp_system.h"
 #include "esp_spi_flash.h"
 
+#include "driver/wifi.h"
 #include "driver/blink.h"
 //#include "FreeRTOSConfig.h"
-
 
 #define BLINK_GPIO 2
 
@@ -24,6 +24,7 @@ void app_main()
 {
     printf("Hello world!\n");
 
+    wifi_start();
 
     blink_start();
 
