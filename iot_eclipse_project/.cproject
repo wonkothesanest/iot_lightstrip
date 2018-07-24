@@ -3,6 +3,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="cdt.managedbuild.toolchain.gnu.cross.base.585818038">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.toolchain.gnu.cross.base.585818038" moduleId="org.eclipse.cdt.core.settings" name="Default">
+				<macros>
+					<stringMacro name="BATCH_BUILD" type="VALUE_TEXT" value="1"/>
+				</macros>
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
@@ -27,6 +30,7 @@
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/freertos/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esp32/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/spi_flash/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/driver/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.88718426" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -43,24 +47,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.1091384924" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.596238798" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.296965508" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
-							</tool>
-						</toolChain>
-					</folderInfo>
-					<folderInfo id="cdt.managedbuild.toolchain.gnu.cross.base.585818038.2083753391" name="/" resourcePath="main/drivers">
-						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.base.87085725" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.base" unusedChildren="">
-							<option id="cdt.managedbuild.option.gnu.cross.prefix.291217704.2096098816" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix.291217704"/>
-							<option id="cdt.managedbuild.option.gnu.cross.path.552533047.1385808571" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path.552533047"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1650817451" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler.443814265">
-								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1094732150" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1516538207" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.408674881">
-								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.676089248" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.245092772" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker.452561309"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.336861335" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker.541146862"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.2004701610" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver.1091384924"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.226235289" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler.596238798">
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1266975768" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>

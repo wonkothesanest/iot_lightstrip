@@ -27,7 +27,6 @@ void app_main()
 
     blink_start();
 
-    //xPortStartScheduler();
     for(;;){
     	vTaskDelay(10000/portTICK_PERIOD_MS);
     }
