@@ -6,18 +6,6 @@
  */
 
 #include "wifi.h"
-#include <string.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_system.h"
-#include "esp_wifi.h"
-#include "esp_event_loop.h"
-#include "esp_log.h"
-#include "nvs_flash.h"
-
-#include "lwip/err.h"
-#include "lwip/sys.h"
 
 #include <string.h>
 #include "freertos/FreeRTOS.h"
@@ -29,12 +17,19 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 
-#include "lwip/err.h"
-#include "lwip/sockets.h"
-#include "lwip/sys.h"
-#include "lwip/netdb.h"
-#include "lwip/dns.h"
+#include "lwip/lwip/err.h"
+#include "lwip/lwip/sockets.h"
+#include "lwip/lwip/sys.h"
+#include "lwip/lwip/netdb.h"
+#include "lwip/lwip/dns.h"
 
+#include "sys/socket.h"
+#include "sdkconfig.h"
+#include "errno.h"
+
+#define BIT0 0x00000001
+#define BIT1 0x00000002
+#define BIT2 0x00000004
 
 static const char *TAG = "simple wifi";
 /* Constants that aren't configurable in menuconfig */
