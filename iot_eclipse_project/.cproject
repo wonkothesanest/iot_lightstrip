@@ -27,6 +27,53 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.443814265" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1068747655" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/iot_eclipse_project/config}&quot;"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/app_trace/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/app_update/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/aws_iot/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/bootloader/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/bootloader_support/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/bt/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/coap/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/console/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/cxx/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/driver/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esp32/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esp_adc_cal/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/espcoredump/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esp_http_client/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esp-tls/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esptool_py/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/ethernet/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/expat/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/fatfs/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/freertos/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/heap/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/idf_test/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/jsmn/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/json/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/libsodium/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/log/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/lwip/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/mbedtls/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/mdns/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/micro-ecc/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/newlib/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/nghttp/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/nvs_flash/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/openssl/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/partition_table/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/pthread/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/sdmmc/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/smartconfig_ack/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/soc/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/spiffs/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/spi_flash/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/tcpip_adapter/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/ulp/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/vfs/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/wear_levelling/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/wpa_supplicant/include"/>
+									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/xtensa-debug-module/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/freertos/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/esp32/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/spi_flash/include"/>

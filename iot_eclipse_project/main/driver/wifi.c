@@ -41,10 +41,19 @@ static const char *TAG = "simple wifi";
 #define WEB_SERVER "example.com"
 #define WEB_PORT 80
 #define WEB_URL "http://example.com/"
+
+
+
+static const char *REQUEST = "GET " WEB_URL " HTTP/1.0\r\n"
+    "Host: "WEB_SERVER"\r\n"
+    "User-Agent: esp-idf/1.0 esp32\r\n"
+    "\r\n";
+
+
 /* The event group allows multiple bits for each event,
    but we only care about one event - are we connected
    to the AP with an IP? */
-const int WIFI_CONNECTED_BIT = 0;
+const int WIFI_CONNECTED_BIT = BIT0;
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t wifi_event_group;
@@ -82,6 +91,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
 
 static void http_get_task(void *pvParameters)
 {
+	ESP_LOGI(TAG, "Starting http_get_task");
     const struct addrinfo hints = {
         .ai_family = AF_INET,
         .ai_socktype = SOCK_STREAM,
@@ -95,8 +105,11 @@ static void http_get_task(void *pvParameters)
         /* Wait for the callback to set the WIFI_CONNECTED_BIT in the
            event group.
         */
+    	ESP_LOGI(TAG, "Waiting for wifi");
+    	vTaskDelay(10000/portTICK_PERIOD_MS);
         xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_BIT,
                             false, true, portMAX_DELAY);
+    	ESP_LOGI(TAG, "Waiting for wifi finished");
         ESP_LOGI(TAG, "Connected to AP");
 
         int err = getaddrinfo(WEB_SERVER, "80", &hints, &res);
@@ -220,8 +233,8 @@ void wifi_init_sta() {
 	ESP_ERROR_CHECK(esp_wifi_start());
 
 	ESP_LOGI(TAG, "wifi_init_sta finished.");
-	ESP_LOGI(TAG, "connect to ap SSID:%s password:%s",
-	EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+//	ESP_LOGI(TAG, "connect to ap SSID:%s password:%s",
+//	EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
 }
 
 void wifi_start() {
@@ -239,6 +252,7 @@ void wifi_start() {
 #else
 	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
 	wifi_init_sta();
+	ESP_LOGI(TAG, "ESP_WIFI creating httpget task");
     xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 5, NULL);
 #endif /*EXAMPLE_ESP_WIFI_MODE_AP*/
 }
