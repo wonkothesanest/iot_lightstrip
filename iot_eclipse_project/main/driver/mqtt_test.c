@@ -20,6 +20,8 @@
 
 #include "mqtt_test.h"
 #include "sdkconfig.h"
+#include "tcpip_adapter.h"
+#include "config.h"
 
 
 static const char *TAG = "mqtt";
@@ -72,20 +74,26 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 
 void start_mqtt(){
 	vWaitForWifiConnection();
-
+	ESP_LOGI(TAG, "Waiting for bits from openhav name");
+	xEventGroupWaitBits(openhab_lookup_event_group, BIT0, false, true, portMAX_DELAY);
+	ESP_LOGI(TAG, "Finished waiting for bits from openhav name");
+	char addr[20];
+	sprintf(&addr, "mqtt://%d.%d.%d.%d", IP2STR(&openhab_address));
 	const esp_mqtt_client_config_t mqtt_cfg = {
-	    .uri = "mqtt://192.168.1.18",
+		.uri = &addr,
 		.port = 1883,
-	    .event_handle = mqtt_event_handler
+	    .event_handle = mqtt_event_handler//,
+		//.transport = MQTT_TRANSPORT_OVER_TCP
 	    // .user_context = (void *)your_context
 	};
 	esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
 	esp_mqtt_client_start(client);
-	esp_mqtt_client_subscribe(client, sub_topic, 1);
+	esp_mqtt_client_subscribe(client, sub_topic, 2);
 	const char * data = "hey hey what you say";
 	for(;;){
 		vTaskDelay(1000/portTICK_PERIOD_MS);
 		esp_mqtt_client_publish(client, pub_topic, data, strlen(data), 1, 1);
+		esp_mqtt_client_subscribe(client, sub_topic, 2);
 	}
 
 }

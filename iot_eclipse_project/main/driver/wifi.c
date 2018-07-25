@@ -242,14 +242,18 @@ static void initialise_mdns(void)
     ESP_ERROR_CHECK( mdns_service_txt_item_set("_http", "_tcp", "u", "admin") );
 
 }
+
 static void query_mdns_host(const char * host_name)
 {
+	xEventGroupClearBits(openhab_lookup_event_group, BIT0);
+	vTaskDelay(100/portTICK_RATE_MS);
+
     ESP_LOGI(TAG, "Query A: %s.local", host_name);
 
     struct ip4_addr addr;
     addr.addr = 0;
 
-    esp_err_t err = mdns_query_a(host_name, 6000,  &addr);
+    esp_err_t err = mdns_query_a(host_name, 1000,  &addr);
     if(err){
         if(err == ESP_ERR_NOT_FOUND){
             ESP_LOGW(TAG, "%s: Host was not found!", esp_err_to_name(err));
@@ -257,23 +261,32 @@ static void query_mdns_host(const char * host_name)
         }
         ESP_LOGE(TAG, "Query Failed: %s", esp_err_to_name(err));
         return;
+    }else{
+    	memcpy(&openhab_address, &addr, sizeof(addr));
+    	xEventGroupSetBits(openhab_lookup_event_group, BIT0);
     }
 
     ESP_LOGI(TAG, IPSTR, IP2STR(&addr));
+
 }
 
 void wifi_start() {
 	//Initialize NVS
     ESP_ERROR_CHECK( nvs_flash_init() );
-
+    openhab_lookup_event_group = xEventGroupCreate();
 	initialise_mdns();
 	wifi_init_sta();
 
+	//TODO: all this blocking should be done with an async task
 
 	vWaitForWifiConnection();
 	while(1){
 		query_mdns_host("osmc");
-		vTaskDelay(10000/portTICK_PERIOD_MS);
+		EventBits_t uxBits = xEventGroupWaitBits(openhab_lookup_event_group, BIT0, false, true, 1000);
+		if((uxBits & BIT0) != 0){
+			ESP_LOGI(TAG, "Attained openhab host name");
+			break;
+		}
 	}
 }
 

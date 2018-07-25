@@ -34,7 +34,9 @@
 void vWaitForWifiConnection();
 
 /* FreeRTOS event group to signal when we are connected*/
-static EventGroupHandle_t wifi_event_group;
+EventGroupHandle_t wifi_event_group;
+EventGroupHandle_t openhab_lookup_event_group;
+struct ip4_addr openhab_address;
 
 
 
