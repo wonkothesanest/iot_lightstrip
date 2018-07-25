@@ -282,7 +282,7 @@ void vWifiStart() {
 	vWifiWaitForConnection();
 	while(1){
 		query_mdns_host("osmc");
-		EventBits_t uxBits = xEventGroupWaitBits(openhab_lookup_event_group, BIT0, false, true, 1000);
+		EventBits_t uxBits = xEventGroupWaitBits(openhab_lookup_event_group, BIT0, false, true, 500);
 		if((uxBits & BIT0) != 0){
 			ESP_LOGI(TAG, "Attained openhab host name");
 			break;

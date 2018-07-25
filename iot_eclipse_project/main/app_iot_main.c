@@ -16,6 +16,7 @@
 #include "driver/wifi.h"
 #include "driver/blink.h"
 #include "driver/mqtt_test.h"
+#include "driver/pwm.h"
 #include "sdkconfig.h"
 //#include "FreeRTOSConfig.h"
 
@@ -29,7 +30,10 @@ void app_main()
     vWifiStart();
     vMqttStart();
 
-    blink_start();
+    vPwmStart();
+
+
+    //blink_start();
 
 
     for(;;){
