@@ -26,8 +26,8 @@ void app_main()
 {
     printf("Hello world!\n");
 
-    wifi_start();
-    start_mqtt();
+    vWifiStart();
+    vMqttStart();
 
     blink_start();
 

@@ -31,7 +31,7 @@
 */
 
 
-void vWaitForWifiConnection();
+void vWifiWaitForConnection();
 
 /* FreeRTOS event group to signal when we are connected*/
 EventGroupHandle_t wifi_event_group;
@@ -40,6 +40,6 @@ struct ip4_addr openhab_address;
 
 
 
-void wifi_start();
+void vWifiStart();
 
 #endif /* MAIN_DRIVER_WIFI_H_ */

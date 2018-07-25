@@ -53,7 +53,7 @@ static const char *REQUEST = "GET " WEB_URL " HTTP/1.0\r\n"
    to the AP with an IP? */
 const int WIFI_CONNECTED_BIT = BIT0;
 
-void vWaitForWifiConnection(){
+void vWifiWaitForConnection(){
     xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_BIT,
                         false, true, portMAX_DELAY);
 }
@@ -270,7 +270,7 @@ static void query_mdns_host(const char * host_name)
 
 }
 
-void wifi_start() {
+void vWifiStart() {
 	//Initialize NVS
     ESP_ERROR_CHECK( nvs_flash_init() );
     openhab_lookup_event_group = xEventGroupCreate();
@@ -279,7 +279,7 @@ void wifi_start() {
 
 	//TODO: all this blocking should be done with an async task
 
-	vWaitForWifiConnection();
+	vWifiWaitForConnection();
 	while(1){
 		query_mdns_host("osmc");
 		EventBits_t uxBits = xEventGroupWaitBits(openhab_lookup_event_group, BIT0, false, true, 1000);

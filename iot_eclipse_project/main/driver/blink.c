@@ -13,6 +13,11 @@
 #include "esp_spi_flash.h"
 #include "sdkconfig.h"
 
+#include "mqtt_test.h"
+#include "mqtt_client.h"
+
+const char * blink_pub_topic = "/home/light/state";
+
 void blink_task(void *pvParameter)
 {
     /* Configure the IOMUX register for pad BLINK_GPIO (some pads are
@@ -27,15 +32,17 @@ void blink_task(void *pvParameter)
     while(1) {
         /* Blink off (output low) */
         gpio_set_level(BLINK_GPIO, 0);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        esp_mqtt_client_publish(mqtt_client, blink_pub_topic, "0",sizeof("0")-1, 1, 0);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
         /* Blink on (output high) */
         gpio_set_level(BLINK_GPIO, 1);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        esp_mqtt_client_publish(mqtt_client, blink_pub_topic, "1",sizeof("1")-1, 1, 0);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
     }
 }
 
 void blink_start(){
-    xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
+    xTaskCreate(&blink_task, "blink_task", 2048, NULL, 5, NULL);
 
 }
 
