@@ -25,5 +25,13 @@ void vPwmSetValue(struct HSV hsv);
  * Gets the HSV value of the current system.
  */
 struct HSV iPwmGetValue();
+/**
+ * Turns on the lights
+ */
+void vPWMTurnOff();
+/**
+ * Turns off the lights
+ */
+void vPWMTurnOn();
 
 #endif /* MAIN_DRIVERS_PWM_H_ */

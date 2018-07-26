@@ -187,3 +187,23 @@ struct HSV iPwmGetValue() {
 	return xRGBToHSV(rgb);
 
 }
+
+void vPWMTurnOff(){
+	struct HSV hsv = {
+			.h = 0.0,
+			.s = 0.0,
+			.v = 0.0
+	};
+	vPwmSetValue(hsv);
+}
+
+//TODO: remember last state
+void vPWMTurnOn(){
+	struct HSV hsv = {
+			.h = 0.0,
+			.s = 0.0,
+			.v = 1.0
+	};
+	vPwmSetValue(hsv);
+}
+
