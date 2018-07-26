@@ -157,6 +157,8 @@ static double uiPwmConvertDutyToPercent(uint32_t duty){
 	return percent;
 }
 
+
+//TODO: send state back to MQTT values
 void vPwmSetValue(struct HSV hsv) {
 	//Convert to usefull rgb
 	struct RGB rgb = xHSVToRGB(hsv);

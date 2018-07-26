@@ -18,6 +18,7 @@
 #include "driver/mqtt_test.h"
 #include "driver/pwm.h"
 #include "sdkconfig.h"
+#include "driver/gpio_interrupts.h"
 //#include "FreeRTOSConfig.h"
 
 #define BLINK_GPIO 2
@@ -31,6 +32,7 @@ void app_main()
     vMqttStart();
 
     vPwmStart();
+    vGPIOInterruptStart();
 
 
     //blink_start();
