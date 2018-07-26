@@ -5,6 +5,7 @@
  *      Author: dustin
  */
 #include "blink.h"
+#include <string.h>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -18,8 +19,12 @@
 
 #define LEDC_HS_TIMER          LEDC_TIMER_0
 #define LEDC_HS_MODE           LEDC_HIGH_SPEED_MODE
-#define LEDC_HS_CH0_GPIO       (2)
-#define LEDC_HS_CH0_CHANNEL    LEDC_CHANNEL_0
+#define LEDC_HS_CH_R_GPIO       (2)
+#define LEDC_HS_CH_R_CHANNEL    LEDC_CHANNEL_0
+#define LEDC_HS_CH_G_GPIO       (3)
+#define LEDC_HS_CH_G_CHANNEL    LEDC_CHANNEL_1
+#define LEDC_HS_CH_B_GPIO       (4)
+#define LEDC_HS_CH_B_CHANNEL    LEDC_CHANNEL_2
 
 #define LEDC_TEST_DUTY         (4000)
 #define LEDC_TEST_FADE_TIME    (800)
@@ -38,31 +43,61 @@
  *         then frequency and bit_num of these channels
  *         will be the same
  */
-ledc_channel_config_t ledc_channel = {
-		.channel = LEDC_HS_CH0_CHANNEL,
-		.duty = 0,
-		.gpio_num = LEDC_HS_CH0_GPIO,
-		.speed_mode = LEDC_HS_MODE,
-		.timer_sel = LEDC_HS_TIMER
+enum pwm_colors {
+	PWM_C_RED = 0,
+	PWM_C_GREEN = 1,
+	PWM_C_BLUE = 2
+};
+ledc_channel_config_t ledc_channel[3] ={
+		{
+				.channel = LEDC_HS_CH_R_CHANNEL,
+				.duty = 0,
+				.gpio_num = LEDC_HS_CH_R_GPIO,
+				.speed_mode = LEDC_HS_MODE,
+				.timer_sel = LEDC_HS_TIMER
+		},
+		{
+				.channel = LEDC_HS_CH_G_CHANNEL,
+				.duty = 0,
+				.gpio_num = LEDC_HS_CH_G_GPIO,
+				.speed_mode = LEDC_HS_MODE,
+				.timer_sel = LEDC_HS_TIMER
+		},
+		{
+				.channel = LEDC_HS_CH_B_CHANNEL,
+				.duty = 0,
+				.gpio_num = LEDC_HS_CH_B_GPIO,
+				.speed_mode = LEDC_HS_MODE,
+				.timer_sel = LEDC_HS_TIMER
+		}
 };
 
 bool brighten = true;
-int brightness = 0;
 static const char * TAG = "PWM";
 
 void pwm_task(void *pvParameter) {
+	struct HSV hsv = {
+			.h = 0.0,
+			.s = 0.0,
+			.v = 0.0
+	};
+	struct HSV hsv2;
 	while(1){
-		if(brightness > 100){
-			brightness = 0;
+		//if beyond the edge
+		if(hsv.v > 1.0){
+			hsv.v = 0.0;
 		}
+
 		if(brighten){
-			vPwmSetValue(brightness);
-			ESP_LOGI(TAG, "Setting Brightness %d", brightness);
+			vPwmSetValue(hsv);
+			ESP_LOGI(TAG, "Setting Brightness %d", (uint8_t)(hsv.v*100.0));
 		}else{
-			vPwmSetValue(0);
+			memcpy(&hsv2, &hsv, sizeof(hsv));
+			hsv2.v = 0.0;
+			vPwmSetValue(hsv2);
 		}
 		brighten = !brighten;
-		brightness += 10;
+		hsv.v += 0.1;
 		vTaskDelay(LEDC_TEST_FADE_TIME/portTICK_PERIOD_MS);
 	}
 }
@@ -83,7 +118,9 @@ void vPwmStart() {
 	ledc_timer_config(&ledc_timer);
 
 	// Set LED Controller with previously prepared configuration
-	ledc_channel_config(&ledc_channel);
+	ledc_channel_config(&ledc_channel[PWM_C_RED]);
+	ledc_channel_config(&ledc_channel[PWM_C_GREEN]);
+	ledc_channel_config(&ledc_channel[PWM_C_BLUE]);
 
 	// Initialize fade service.
 	ledc_fade_func_install(0);
@@ -91,43 +128,62 @@ void vPwmStart() {
 	xTaskCreate(&pwm_task, "PWMTask", 2048, NULL, 5, NULL);
 }
 
-static uint32_t uiPwmConvertPercent(int v){
+static uint32_t uiPwmConvertPercent(double v){
 	uint32_t duty = 0;
-	if(v == 0){
+	if(v == 0.0){
 		duty = 0;
-	}else if(v == 100){
+	}else if(v >= 1.0){
 		duty = LEDC_DUTY_MAX;
 	}else{
-		duty = LEDC_DUTY_MAX*v/100;
+		duty = LEDC_DUTY_MAX*v/1.0;
 	}
 	return duty;
 }
-static int uiPwmConvertDutyToPercent(uint32_t duty){
-	int percent = 0;
+static double uiPwmConvertDutyToPercent(uint32_t duty){
+	double percent = 0;
 	if( duty == 0){
 		percent = 0;
 	}else if(duty == LEDC_DUTY_MAX){
-		percent = 100;
+		percent = 1.0;
 	}else{
-		percent = 100*duty/LEDC_DUTY_MAX;
+		percent = (double)1.0*(double)duty/(double)LEDC_DUTY_MAX;
 	}
 	return percent;
 }
 
-void vPwmSetValue(int v) {
+void vPwmSetValue(struct HSV hsv) {
+	struct RGB rgb = xHSVToRGB(hsv);
+
 	//convert 0-100 to 0-4092 (12 bit signal)
-	uint32_t duty = uiPwmConvertPercent(v);
-	ledc_set_fade_with_time(ledc_channel.speed_mode, ledc_channel.channel,
-			duty, LEDC_TEST_FADE_TIME);
-	ledc_fade_start(ledc_channel.speed_mode, ledc_channel.channel,
+	uint32_t duty_r = uiPwmConvertPercent(rgb.r);
+	uint32_t duty_g = uiPwmConvertPercent(rgb.g);
+	uint32_t duty_b = uiPwmConvertPercent(rgb.b);
+
+	ledc_set_fade_with_time(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel,
+			duty_r, LEDC_TEST_FADE_TIME);
+	ledc_set_fade_with_time(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel,
+			duty_g, LEDC_TEST_FADE_TIME);
+	ledc_set_fade_with_time(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel,
+			duty_b, LEDC_TEST_FADE_TIME);
+
+	ledc_fade_start(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel,
+			LEDC_FADE_NO_WAIT);
+	ledc_fade_start(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel,
+			LEDC_FADE_NO_WAIT);
+	ledc_fade_start(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel,
 			LEDC_FADE_NO_WAIT);
 }
 
 
+struct HSV iPwmGetValue() {
+	double r = uiPwmConvertDutyToPercent(ledc_get_duty(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel));
+	double g = uiPwmConvertDutyToPercent(ledc_get_duty(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel));
+	double b = uiPwmConvertDutyToPercent(ledc_get_duty(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel));
+	struct RGB rgb = {
+			.r = r,
+			.g = g,
+			.b = b
+	};
+	return xRGBToHSV(rgb);
 
-uint32_t iPwmGetDutyValue() {
-	return ledc_get_duty(ledc_channel.speed_mode, ledc_channel.channel);
-}
-int iPwmGetValue() {
-	return uiPwmConvertDutyToPercent(ledc_get_duty(ledc_channel.speed_mode, ledc_channel.channel));
 }
