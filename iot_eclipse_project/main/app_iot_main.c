@@ -31,11 +31,11 @@ void app_main()
     vWifiStart();
     vMqttStart();
 
-    vPwmStart();
-    vGPIOInterruptStart();
+    //vPwmStart();
+    //vGPIOInterruptStart();
 
 
-    //blink_start();
+    blink_start();
 
 
     for(;;){
