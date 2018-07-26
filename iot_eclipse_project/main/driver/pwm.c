@@ -30,6 +30,12 @@
 #define LEDC_TEST_FADE_TIME    (800)
 
 #define LEDC_DUTY_MAX (4092-1)
+
+struct HSV hsv_last_value = {
+	.h = 0.0,
+	.s = 0.0,
+	.v = 0.0
+};
 /*
  * Prepare individual configuration
  * for each channel of LED Controller
@@ -152,7 +158,10 @@ static double uiPwmConvertDutyToPercent(uint32_t duty){
 }
 
 void vPwmSetValue(struct HSV hsv) {
+	//Convert to usefull rgb
 	struct RGB rgb = xHSVToRGB(hsv);
+	//Store last set value for on off
+	memcpy(&hsv_last_value, &hsv, sizeof(hsv_last_value));
 
 	//convert 0-100 to 0-4092 (12 bit signal)
 	uint32_t duty_r = uiPwmConvertPercent(rgb.r);
@@ -199,11 +208,6 @@ void vPWMTurnOff(){
 
 //TODO: remember last state
 void vPWMTurnOn(){
-	struct HSV hsv = {
-			.h = 0.0,
-			.s = 0.0,
-			.v = 1.0
-	};
-	vPwmSetValue(hsv);
+	vPwmSetValue(hsv_last_value);
 }
 
