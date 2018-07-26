@@ -55,13 +55,16 @@ void vGPIOInterruptStart() {
     io_conf.pull_up_en = 0;
     gpio_config(&io_conf);
 
-    //change gpio intrrupt type for one pin
+    //change gpio intrrupt type for two pins
     gpio_set_intr_type(GPIO_INPUT_IO_PIR, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type(GPIO_INPUT_IO_RNG_FINDER, GPIO_INTR_ANYEDGE);
 
     //create a queue to handle gpio event from isr
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
+
     gpio_evt_grp_pir = xEventGroupCreate();
     xEventGroupClearBits(gpio_evt_grp_pir, BIT0);
+
     gpio_evt_grp_rng_finder = xEventGroupCreate();
     xEventGroupClearBits(gpio_evt_grp_pir, BIT0);
 
