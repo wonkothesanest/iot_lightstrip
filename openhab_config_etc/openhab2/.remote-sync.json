@@ -1,0 +1,15 @@
+{
+  "transport": "scp",
+  "hostname": "osmc.local",
+  "port": 22,
+  "username": "osmc",
+  "password": "osmc",
+  "target": "/etc/openhab2",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "watch": [
+    "/"
+  ]
+}

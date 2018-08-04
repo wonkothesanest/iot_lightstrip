@@ -1,0 +1,68 @@
+
+
+Switch Switch1 (gSwitchtest) {mqtt="
+<[broker:/home/light/state:state:ON:1],
+<[broker:/home/light/state:state:OFF:0],
+>[broker:/home/light/command:command:ON:1],
+>[broker:/home/light/command:command:OFF:0]
+"}
+Switch Switch2 (gSwitchtest) {mqtt="
+>[broker:myhome/bedroom/switch2:command:ON:1],
+>[broker:myhome/bedroom/switch2:command:OFF:0],
+<[broker:myhome/bedroom/switch2:state:ON:1],
+<[broker:myhome/bedroom/switch2:state:OFF:0]
+"}
+
+Color myColorTest "Color Test" {mqtt=">[broker:myhome/colortest/state:state:*:default],>[broker:myhome/colortest/command:command:*:default]"}
+Dimmer myDimmerTest "Dimmer Test" {mqtt=">[broker:myhome/dimmertest/state:state:*:default],>[broker:myhome/dimmertest/command:command:*:default]"}
+Switch mySwitchTest "Switch Test" {mqtt=">[broker:myhome/switchtest/state:state:*:default],>[broker:myhome/switchtest/command:command:*:default]"}
+
+Group:Color gSwitchtest "Switches"
+//Group:Switch:OR(ON,OFF) gSwitchtest "Switches"
+//Group:Number:AVG gSwitchtest "Switches"
+
+// Group For All Lights
+Group gAllLights "All Lights"
+//Group:Dimmer:AVG gAllLights "AllL Lights"
+//Group:Switch:OR(ON,OFF) gAllLights "All Lights"
+//Group:Number:AVG gAllLights "All Lights"
+
+
+
+
+
+//# Kitchen Lights
+Color cKitchen_Cabinet_Lights "Kitchen Lights" (gAllLights) {mqtt="
+>[broker:home/kitchen/cKitchen_Cabinet_Lights/command:command:*:default],
+>[broker:home/kitchen/cKitchen_Cabinet_Lights/state:state:*:default],
+<[broker:home/kitchen/cKitchen_Cabinet_Lights/state:state:*:default]
+"}
+
+//# Bed and Window Lights
+Color cBed_Lights "Bed and Window Lights" (gAllLights) {mqtt="
+>[broker:home/livingroom/cBed_Lights/command:command:*:default],
+>[broker:home/livingroom/cBed_Lights/state:state:*:default],
+<[broker:home/livingroom/cBed_Lights/state:state:*:default]
+"}
+
+//# Kitchen Lights
+Color cBook_Shelf_Lights "Book Shelf Lights" (gAllLights) {mqtt="
+>[broker:home/livingroom/cBook_Shelf_Lights/command:command:*:default],
+>[broker:home/livingroom/cBook_Shelf_Lights/state:state:*:default],
+<[broker:home/livingroom/cBook_Shelf_Lights/state:state:*:default]
+"}
+
+
+// Sunrise and Sunset
+DateTime Sunrise_Time       "Sunrise [%1$tH:%1$tM]"       { channel="astro:sun:home:rise#start" }
+DateTime Sunset_Time        "Sunrise [%1$tH:%1$tM]"       { channel="astro:sun:home:set#end" }
+
+// Time of last Motion detected
+DateTime Motion_Detected_Timed
+
+//PIR sensor for motion
+Switch contKitchen_PIR "Kitchen Motion Detector" {mqtt="
+<[broker:home/kitchen/sPIR/status:state:ON:1],
+<[broker:home/kitchen/sPIR/status:state:OFF:0]
+"}
+DateTime dtKitchen_PIR_Time

@@ -1,0 +1,38 @@
+sitemap main label="MC Smart Home Automation" {
+
+Frame label="Accent-Lighting" {
+
+
+Colorpicker item=myColorTest
+Slider item=myDimmerTest
+Switch item=Switch1
+
+Slider item=myColorTest
+Switch item=myColorTest
+
+
+}
+
+Frame label="Real Lighting" {
+Slider item=gAllLights
+Colorpicker item=gAllLights
+Switch item=gAllLights
+}
+
+Frame label="Individual Lighting"{
+Colorpicker item=cKitchen_Cabinet_Lights
+Switch item=cKitchen_Cabinet_Lights
+Colorpicker item=cBed_Lights
+Colorpicker item=cBook_Shelf_Lights
+}
+
+Frame label="Sunrise Sunset"{
+Text item=Sunrise_Time icon="time"
+Text item=Sunset_Time icon="time"
+Text item=dtKitchen_PIR_Time icon="time"
+Text item=contKitchen_PIR icon="none"
+
+}
+
+
+}
