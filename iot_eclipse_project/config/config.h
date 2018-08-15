@@ -31,8 +31,8 @@
  */
 #define GPIO_INPUT_IO_PIR     		(4)
 #define GPIO_INPUT_IO_RNG_FINDER	(19)
-#define LEDC_HS_CH_R_GPIO       	(13)
-#define LEDC_HS_CH_G_GPIO       	(14)
+#define LEDC_HS_CH_R_GPIO       	(14)
+#define LEDC_HS_CH_G_GPIO       	(13)
 #define LEDC_HS_CH_B_GPIO       	(26)
 
 //URI setup for MQTT based commands
@@ -62,6 +62,11 @@
 #define MQTT_TOPIC_IR_CMD			MQTT_IR "command"
 #define MQTT_TOPIC_RANGE_STATUS		MQTT_RANGE "status"
 */
+
+#define ANIM_CMD_FADE "FADE"
+#define ANIM_CMD_PULSE "PULSE"
+#define ANIM_CMD_FLASH "FLASH"
+#define ANIM_CMD_RANDOM "RANDOM"
 
 
 

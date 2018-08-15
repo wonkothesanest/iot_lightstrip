@@ -20,6 +20,7 @@ void vPwmStart();
  * Sets an HSV value to the pwm pins
  */
 void vPwmSetValue(struct HSV hsv);
+void vPwmSetValueRec(struct HSV hsv, bool record, bool fade);
 
 /**
  * Gets the HSV value of the current system.

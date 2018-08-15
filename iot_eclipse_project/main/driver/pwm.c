@@ -17,6 +17,7 @@
 #include "pwm.h"
 #include "esp_log.h"
 #include "config.h"
+#include "animation.h"
 
 #define LEDC_HS_TIMER          LEDC_TIMER_0
 #define LEDC_HS_MODE           LEDC_LOW_SPEED_MODE
@@ -32,7 +33,7 @@
 struct HSV hsv_last_value = {
 	.h = 0.0,
 	.s = 0.0,
-	.v = 0.0
+	.v = 1.0
 };
 /*
  * Prepare individual configuration
@@ -157,11 +158,16 @@ static double uiPwmConvertDutyToPercent(uint32_t duty){
 
 
 //TODO: send state back to MQTT values
-void vPwmSetValue(struct HSV hsv) {
+void vPwmSetValueRec(struct HSV hsv, bool record, bool fade) {
 	//Convert to usefull rgb
 	struct RGB rgb = xHSVToRGB(hsv);
-	//Store last set value for on off
-	memcpy(&hsv_last_value, &hsv, sizeof(hsv_last_value));
+//	if(bAnimationRunning()){
+//		vAnimationStop();
+//	}
+	if(record){
+		//Store last set value for on off
+		memcpy(&hsv_last_value, &hsv, sizeof(hsv_last_value));
+	}
 
 	//convert 0-100 to 0-4092 (12 bit signal)
 	uint32_t duty_r = uiPwmConvertPercent(rgb.r);
@@ -169,19 +175,35 @@ void vPwmSetValue(struct HSV hsv) {
 	uint32_t duty_b = uiPwmConvertPercent(rgb.b);
 	ESP_LOGI(TAG, "Setting H,S,V values [%lf, %lf, %lf] for duty cycles [%d, %d, %d]",hsv.h, hsv.s, hsv.v, duty_r, duty_g, duty_b);
 
-	ledc_set_fade_with_time(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel,
-			duty_r, LEDC_TEST_FADE_TIME);
-	ledc_set_fade_with_time(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel,
-			duty_g, LEDC_TEST_FADE_TIME);
-	ledc_set_fade_with_time(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel,
-			duty_b, LEDC_TEST_FADE_TIME);
+	if(fade){
+		ledc_set_fade_with_time(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel,
+				duty_r, LEDC_TEST_FADE_TIME);
+		ledc_set_fade_with_time(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel,
+				duty_g, LEDC_TEST_FADE_TIME);
+		ledc_set_fade_with_time(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel,
+				duty_b, LEDC_TEST_FADE_TIME);
 
-	ledc_fade_start(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel,
-			LEDC_FADE_NO_WAIT);
-	ledc_fade_start(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel,
-			LEDC_FADE_NO_WAIT);
-	ledc_fade_start(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel,
-			LEDC_FADE_NO_WAIT);
+		ledc_fade_start(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel,
+				LEDC_FADE_NO_WAIT);
+		ledc_fade_start(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel,
+				LEDC_FADE_NO_WAIT);
+		ledc_fade_start(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel,
+				LEDC_FADE_NO_WAIT);
+	}else{
+		ledc_set_duty(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel, duty_r);
+		ledc_set_duty(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel, duty_g);
+		ledc_set_duty(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel, duty_b);
+		ledc_update_duty(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel);
+		ledc_update_duty(ledc_channel[PWM_C_GREEN].speed_mode, ledc_channel[PWM_C_GREEN].channel);
+		ledc_update_duty(ledc_channel[PWM_C_BLUE].speed_mode, ledc_channel[PWM_C_BLUE].channel);
+	}
+}
+
+/**
+ * Overloaded function for default call
+ */
+void vPwmSetValue(struct HSV hsv) {
+	vPwmSetValueRec(hsv, true, true);
 }
 
 
@@ -204,11 +226,11 @@ void vPWMTurnOff(){
 			.s = 0.0,
 			.v = 0.0
 	};
-	vPwmSetValue(hsv);
+	vPwmSetValueRec(hsv, false, true);
 }
 
 //TODO: remember last state
 void vPWMTurnOn(){
-	vPwmSetValue(hsv_last_value);
+	vPwmSetValueRec(hsv_last_value, false, true);
 }
 

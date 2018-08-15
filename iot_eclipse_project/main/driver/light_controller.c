@@ -14,11 +14,14 @@
 #include "pwm.h"
 #include "util.h"
 #include "config.h"
+#include "animation.h"
 
 static const char * TAG = "Light Controller";
 
 QueueHandle_t hsv_light_queue;
+QueueHandle_t anim_light_queue;
 char hsv_light_queue_buff[HSV_LIGHT_QUEUE_SZ];
+char anim_light_queue_buff[HSV_LIGHT_QUEUE_SZ];
 
 
 static int hsv_parse_csv(int * ret, char * buff){
@@ -92,13 +95,44 @@ void hsv_cmd_task(void *pvParameter){
     }
 }
 
+void anim_cmd_task(void *pvParameter){
+    while(1){
+		if(xQueueReceive(anim_light_queue, (void*)&anim_light_queue_buff, portMAX_DELAY)){
+			ESP_LOGI(TAG, "Received an item from the animation queue");
+			if(memcmp(&anim_light_queue_buff, ANIM_CMD_FADE, sizeof(ANIM_CMD_FADE)) == 0){
+				ESP_LOGI(TAG, "Fading lights to OFF");
+				vAnimationFade(2000);
+			}else if(memcmp(&anim_light_queue_buff, ANIM_CMD_PULSE, sizeof(ANIM_CMD_PULSE)) == 0){
+				ESP_LOGI(TAG, "Pulsing");
+				vAnimationPulseCnt(200, 200, 3);
+			}else if(memcmp(&anim_light_queue_buff, ANIM_CMD_FLASH, sizeof(ANIM_CMD_FLASH)) == 0){
+				ESP_LOGI(TAG, "Flashing");
+				vAnimationFlashCnt(200, 200, 3);
+			}else if(memcmp(&anim_light_queue_buff, ANIM_CMD_RANDOM, sizeof(ANIM_CMD_RANDOM)) == 0){
+				ESP_LOGI(TAG, "Random Setting");
+				vAnimationRandom(3000);
+			}else{
+				//TODO: dim up, dim down
+				ESP_LOGE(TAG, "Command Not Found [%s]", anim_light_queue_buff);
+			}
+		}else{
+			ESP_LOGE(TAG, "Queue was not able to receive");
+		}
+
+    }
+}
+
+
 
 void vStartLightController() {
 
 	hsv_light_queue = xQueueCreate(10, HSV_LIGHT_QUEUE_SZ);
+	anim_light_queue = xQueueCreate(10, HSV_LIGHT_QUEUE_SZ);
 	vMqttWaitForConnection();
     vMqttSubscribe(MQTT_TOPIC_HSV_CMD, &hsv_light_queue);
+    vMqttSubscribe(MQTT_TOPIC_HSV_ANIM, &anim_light_queue);
     xTaskCreate(&hsv_cmd_task, "hsv_task", 2048, NULL, 5, NULL);
+    xTaskCreate(&anim_cmd_task, "anim_task", 2048, NULL, 5, NULL);
 
 }
 
