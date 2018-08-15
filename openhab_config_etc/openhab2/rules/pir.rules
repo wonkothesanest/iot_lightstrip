@@ -10,70 +10,79 @@
 */
 var Timer motionTimer = null
 var Timer fadeTimer = null
-val int timeoutMinutes = 30
-val int fadeSeconds = 75
+
+//Should be less than timeoutMinutes
+val int fadeMinutes = 1
+val int timeoutMinutes = 2
+
 val String TAG = "PIR"
-var HSBType lastColor = null
-var int dimBrightness = 15
+var int lastBrightness = 100
 
 
+/**
+  Sets the two timers for fade and command off
+  Reschedules if they have already been Sets
+*/
 rule "PIR Changed To ON"
 when
-  Item contKitchen_PIR received update
+  Item contKitchen_PIR received command ON
 then
-  if(contKitchen_PIR.state == OFF){
-    return
-  }
+
   val hsb = cKitchen_Cabinet_Lights.state as HSBType
   val brightness = hsb.brightness.intValue
   logInfo(TAG, "Brightness: " + brightness)
+  gAllLights.members.forEach[item |
+    logInfo(TAG, "item name: " + item.name)
+  ]
 
   if(brightness == 0){
     logInfo(TAG, "Setting Brightness: " + hsb.hue+","+ hsb.saturation +"," + lastBrightness)
     cKitchen_Cabinet_Lights.sendCommand(hsb.hue+","+ hsb.saturation +"," + lastBrightness)
+  }else{
+    lastBrightness = brightness
   }
 
   if(motionTimer === null){
     logInfo(TAG, "Creating Timer")
     motionTimer = createTimer(now.plusMinutes(timeoutMinutes), [|
+      logInfo(TAG, "Fade Timer has triggered")
       contKitchen_PIR.sendCommand(OFF)
+      motionTimer = null
     ])
   }else{
     logInfo(TAG, "Reschedule Timer")
     motionTimer.reschedule(now.plusMinutes(timeoutMinutes))
   }
-  if(fadeTimer!==null){
-    fadeTimer.cancel()
-    fadeTimer = null
-    cKitchen_Cabinet_Lights.sendCommand(hsb.hue+","+ hsb.saturation +"," + lastBrightness)
+  if(fadeTimer === null){
+    logInfo(TAG, "Creating Fade Timer")
+    fadeTimer = createTimer(now.plusMinutes(fadeMinutes), [|
+      logInfo(TAG, "Fade Timer has triggered")
+      gAllLightAnimations.members.forEach[item |
+        item.sendCommand("ANIM1")
+      ]
+    ])
+  }else{
+    logInfo(TAG, "Reschedule Fade Timer")
+    fadeTimer.reschedule(now.plusMinutes(fadeMinutes))
   }
-
 
 end
 
 
 
-
+/**
+  if the PIR gets triggered to off
+  the timers have run out
+  we take all the members of the light group
+  send the off command
+*/
 rule "PIR Changed To OFF"
 when
   Item contKitchen_PIR received command OFF
 then
-  motionTimer = null
-  val state = (cKitchen_Cabinet_Lights.state as HSBType)
-  logInfo(TAG, "Dimming state of lights")
-  lastBrightness = state.brightness.intValue
-  cKitchen_Cabinet_Lights.sendCommand(state.hue+","+ state.saturation +"," + dimBrightness)
-  if(fadeTimer !== null){
-    fadeTimer.cancel()
-    fadeTimer = null
-  }
-  fadeTimer = createTimer(now.plusSeconds(fadeSeconds),[|
-    logInfo(TAG, "Turning off lights from Fade")
-    cKitchen_Cabinet_Lights.sendCommand(OFF)
-    fadeTimer = null
-    if(motionTimer!==null){
-      motionTimer.cancel()
-    }
-  ])
-
+  logInfo(TAG, "Turning off lights")
+  gAllLights.members.forEach[item |
+    logInfo(TAG, "item name: " + item.name)
+    item.sendCommand(OFF)
+  ]
 end

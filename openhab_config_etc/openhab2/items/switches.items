@@ -18,16 +18,10 @@ Dimmer myDimmerTest "Dimmer Test" {mqtt=">[broker:myhome/dimmertest/state:state:
 Switch mySwitchTest "Switch Test" {mqtt=">[broker:myhome/switchtest/state:state:*:default],>[broker:myhome/switchtest/command:command:*:default]"}
 
 Group:Color gSwitchtest "Switches"
-//Group:Switch:OR(ON,OFF) gSwitchtest "Switches"
-//Group:Number:AVG gSwitchtest "Switches"
 
 // Group For All Lights
 Group gAllLights "All Lights"
-//Group:Dimmer:AVG gAllLights "AllL Lights"
-//Group:Switch:OR(ON,OFF) gAllLights "All Lights"
-//Group:Number:AVG gAllLights "All Lights"
-
-
+Group gAllLightAnimations "All Animations"
 
 
 
@@ -36,6 +30,12 @@ Color cKitchen_Cabinet_Lights "Kitchen Lights" (gAllLights) {mqtt="
 >[broker:home/kitchen/cKitchen_Cabinet_Lights/command:command:*:default],
 >[broker:home/kitchen/cKitchen_Cabinet_Lights/state:state:*:default],
 <[broker:home/kitchen/cKitchen_Cabinet_Lights/state:state:*:default]
+"}
+
+String sKitchen_Cabinet_Lights_Anim "Kitchen Lights Animation" (gAllLightAnimations) {mqtt="
+>[broker:home/kitchen/cKitchen_Cabinet_Lights/animation:command:*:default],
+>[broker:home/kitchen/cKitchen_Cabinet_Lights/animation:state:*:default],
+<[broker:home/kitchen/cKitchen_Cabinet_Lights/animation:state:*:default]
 "}
 
 //# Bed and Window Lights
@@ -55,14 +55,14 @@ Color cBook_Shelf_Lights "Book Shelf Lights" (gAllLights) {mqtt="
 
 // Sunrise and Sunset
 DateTime Sunrise_Time       "Sunrise [%1$tH:%1$tM]"       { channel="astro:sun:home:rise#start" }
-DateTime Sunset_Time        "Sunrise [%1$tH:%1$tM]"       { channel="astro:sun:home:set#end" }
+DateTime Sunset_Time        "Sunset [%1$tH:%1$tM]"        { channel="astro:sun:home:set#end" }
 
 // Time of last Motion detected
 DateTime Motion_Detected_Timed
 
 //PIR sensor for motion
 Switch contKitchen_PIR "Kitchen Motion Detector" {mqtt="
-<[broker:home/kitchen/sPIR/status:state:ON:1],
-<[broker:home/kitchen/sPIR/status:state:OFF:0]
+<[broker:home/kitchen/sPIR/command:command:ON:1],
+<[broker:home/kitchen/sPIR/command:command:OFF:0]
 "}
 DateTime dtKitchen_PIR_Time

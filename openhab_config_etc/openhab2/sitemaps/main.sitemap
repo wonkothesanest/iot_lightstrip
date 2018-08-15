@@ -1,17 +1,5 @@
 sitemap main label="MC Smart Home Automation" {
 
-Frame label="Accent-Lighting" {
-
-
-Colorpicker item=myColorTest
-Slider item=myDimmerTest
-Switch item=Switch1
-
-Slider item=myColorTest
-Switch item=myColorTest
-
-
-}
 
 Frame label="Real Lighting" {
 Slider item=gAllLights
