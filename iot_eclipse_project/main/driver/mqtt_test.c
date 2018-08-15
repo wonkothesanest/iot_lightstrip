@@ -71,8 +71,9 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
                 		continue;
                 	}else{
                 		//we have the right topic now we copy over the data into the queue
+                		// last character should be null for string termination
+                		event->data[event->data_len] = '\0';
                 		ESP_LOGI(TAG, "Found Topic [%s] appending data to its queue with length [%d]",mqtt_queue_arr[queue_ind_cntr].topic,event->data_len);
-                		event->data[event->data_len] = 0;
                 		xQueueSendToBack(*(mqtt_queue_arr[queue_ind_cntr].evt_queue), (void*)event->data, 10);
                 		found_queue = true;
                 		break;

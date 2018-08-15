@@ -111,6 +111,9 @@ void anim_cmd_task(void *pvParameter){
 			}else if(memcmp(&anim_light_queue_buff, ANIM_CMD_RANDOM, sizeof(ANIM_CMD_RANDOM)) == 0){
 				ESP_LOGI(TAG, "Random Setting");
 				vAnimationRandom(3000);
+			}else if(memcmp(&anim_light_queue_buff, ANIM_CMD_NORMAL, sizeof(ANIM_CMD_NORMAL)) == 0){
+				ESP_LOGI(TAG, "Stoping all Animations");
+				vAnimationStop();
 			}else{
 				//TODO: dim up, dim down
 				ESP_LOGE(TAG, "Command Not Found [%s]", anim_light_queue_buff);

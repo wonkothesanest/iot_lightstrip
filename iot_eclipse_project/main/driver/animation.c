@@ -43,6 +43,7 @@ void vAnimationLoop(void * pvParameters){
 				curValue.v -= 0.01;
 				if(curValue.v <= 0.0){
 					curValue.v = 0.0;
+					vAnimationStop();
 				}
 				vPwmSetValueRec(curValue, false, false);
 				delayTime = (R1/100)/portTICK_PERIOD_MS;
@@ -96,7 +97,7 @@ void vAnimationLoop(void * pvParameters){
 		case 1<<3:
 				curValue.h = rand() % 360;
 				curValue.s = (double)(rand() % 100)/100.0;
-				vPwmSetValueRec(curValue, false, false);
+				vPwmSetValueRec(curValue, false, true);
 				delayTime = R1/portTICK_PERIOD_MS;
 				break;
 		}
@@ -114,6 +115,7 @@ bool bAnimationRunning(){
 void vAnimationStart() {
 	anim_reg = 0;
 	animation_semaphore = xSemaphoreCreateBinary();
+	xSemaphoreGive(animation_semaphore);
     xTaskCreate(&vAnimationLoop, "animation_task", 2048, NULL, 5, NULL);
 }
 

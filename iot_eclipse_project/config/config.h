@@ -63,6 +63,7 @@
 #define MQTT_TOPIC_RANGE_STATUS		MQTT_RANGE "status"
 */
 
+#define ANIM_CMD_NORMAL "STOP"
 #define ANIM_CMD_FADE "FADE"
 #define ANIM_CMD_PULSE "PULSE"
 #define ANIM_CMD_FLASH "FLASH"

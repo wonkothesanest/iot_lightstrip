@@ -21,6 +21,7 @@
 #include "driver/gpio_interrupts.h"
 #include "driver/light_controller.h"
 #include "driver/pir.h"
+#include "driver/animation.h"
 //#include "FreeRTOSConfig.h"
 
 #define BLINK_GPIO 2
@@ -36,6 +37,7 @@ void app_main()
     vStartLightController();
     vGPIOInterruptStart();
     vPirStart();
+    vAnimationStart();
 
     //blink_start();
 
