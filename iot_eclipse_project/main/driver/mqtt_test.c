@@ -71,7 +71,9 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
                 		continue;
                 	}else{
                 		//we have the right topic now we copy over the data into the queue
-                		xQueueSendToBack(*mqtt_queue_arr[queue_ind_cntr].evt_queue, (void*)event->data, 10);
+                		ESP_LOGI(TAG, "Found Topic [%s] appending data to its queue with length [%d]",mqtt_queue_arr[queue_ind_cntr].topic,event->data_len);
+                		event->data[event->data_len] = 0;
+                		xQueueSendToBack(*(mqtt_queue_arr[queue_ind_cntr].evt_queue), (void*)event->data, 10);
                 		found_queue = true;
                 		break;
                 	}
@@ -94,7 +96,6 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
             */
 
             printf("TOPIC=%.*s [%d]\r\n", event->topic_len, event->topic, event->topic_len);
-            printf("SUBTOPIC=%.*s [%d] [%d]\r\n", strlen(sub_topic), sub_topic, memcmp(event->topic, sub_topic, strlen(sub_topic)-1), strlen(sub_topic));
             printf("DATA=%.*s [%d]\r\n", event->data_len, event->data, event->data_len);
             break;
         case MQTT_EVENT_ERROR:
@@ -152,7 +153,7 @@ void vMqttSubscribe(const char * topic, QueueHandle_t * evt_queue){
 }
 
 void vMqttPublish(const char * topic, const char * msg, int msg_len){
-    esp_mqtt_client_publish(mqtt_client, topic, msg,msg_len-1, 1, 0);
+    esp_mqtt_client_publish(mqtt_client, topic, msg, msg_len-1, 1, 0);
 }
 
 

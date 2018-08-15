@@ -16,14 +16,12 @@
 #include "driver/ledc.h"
 #include "pwm.h"
 #include "esp_log.h"
+#include "config.h"
 
 #define LEDC_HS_TIMER          LEDC_TIMER_0
-#define LEDC_HS_MODE           LEDC_HIGH_SPEED_MODE
-#define LEDC_HS_CH_R_GPIO       (2)
+#define LEDC_HS_MODE           LEDC_LOW_SPEED_MODE
 #define LEDC_HS_CH_R_CHANNEL    LEDC_CHANNEL_0
-#define LEDC_HS_CH_G_GPIO       (3)
 #define LEDC_HS_CH_G_CHANNEL    LEDC_CHANNEL_1
-#define LEDC_HS_CH_B_GPIO       (4)
 #define LEDC_HS_CH_B_CHANNEL    LEDC_CHANNEL_2
 
 #define LEDC_TEST_DUTY         (4000)
@@ -116,7 +114,7 @@ void vPwmStart() {
 	 */
 	ledc_timer_config_t ledc_timer = {
 			.duty_resolution = LEDC_TIMER_12_BIT, // resolution of PWM duty
-			.freq_hz = 5000,                      // frequency of PWM signal
+			.freq_hz = 500,                      // frequency of PWM signal
 			.speed_mode = LEDC_HS_MODE,           // timer mode
 			.timer_num = LEDC_HS_TIMER            // timer index
 			};
@@ -131,7 +129,7 @@ void vPwmStart() {
 	// Initialize fade service.
 	ledc_fade_func_install(0);
 
-	xTaskCreate(&pwm_task, "PWMTask", 2048, NULL, 5, NULL);
+	//xTaskCreate(&pwm_task, "PWMTask", 2048, NULL, 5, NULL);
 }
 
 static uint32_t uiPwmConvertPercent(double v){
@@ -169,6 +167,7 @@ void vPwmSetValue(struct HSV hsv) {
 	uint32_t duty_r = uiPwmConvertPercent(rgb.r);
 	uint32_t duty_g = uiPwmConvertPercent(rgb.g);
 	uint32_t duty_b = uiPwmConvertPercent(rgb.b);
+	ESP_LOGI(TAG, "Setting H,S,V values [%lf, %lf, %lf] for duty cycles [%d, %d, %d]",hsv.h, hsv.s, hsv.v, duty_r, duty_g, duty_b);
 
 	ledc_set_fade_with_time(ledc_channel[PWM_C_RED].speed_mode, ledc_channel[PWM_C_RED].channel,
 			duty_r, LEDC_TEST_FADE_TIME);

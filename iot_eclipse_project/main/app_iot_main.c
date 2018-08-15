@@ -19,6 +19,8 @@
 #include "driver/pwm.h"
 #include "sdkconfig.h"
 #include "driver/gpio_interrupts.h"
+#include "driver/light_controller.h"
+#include "driver/pir.h"
 //#include "FreeRTOSConfig.h"
 
 #define BLINK_GPIO 2
@@ -30,16 +32,16 @@ void app_main()
 
     vWifiStart();
     vMqttStart();
+    vPwmStart();
+    vStartLightController();
+    vGPIOInterruptStart();
+    vPirStart();
 
-    //vPwmStart();
-    //vGPIOInterruptStart();
-
-
-    blink_start();
+    //blink_start();
 
 
     for(;;){
-    	vTaskDelay(10000/portTICK_PERIOD_MS);
+    	vTaskDelay(portMAX_DELAY);
     }
 
     printf("Restarting now.\n");

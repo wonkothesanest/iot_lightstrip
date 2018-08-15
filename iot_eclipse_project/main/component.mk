@@ -5,8 +5,10 @@
 
 COMPONENT_ADD_INCLUDEDIRS := \
 		. \
-        driver 
+        driver \
+        ../config
 
 COMPONENT_SRCDIRS := \
 		. \
-        driver 
+        driver \
+        ../config

@@ -14,6 +14,7 @@
 #include "driver/gpio.h"
 #include "config.h"
 #include "freertos/event_groups.h"
+#include "mqtt_test.h"
 
 
 #define ESP_INTR_FLAG_DEFAULT 0
@@ -34,7 +35,7 @@ static void gpio_task_example(void* arg)
         	if(io_num == GPIO_INPUT_IO_PIR){
         		xEventGroupSetBits(gpio_evt_grp_pir, BIT0);
         	}else if(io_num == GPIO_INPUT_IO_RNG_FINDER){
-        		xEventGroupSetBits(gpio_evt_grp_rng_finder, BIT0);
+        		//xEventGroupSetBits(gpio_evt_grp_rng_finder, BIT0);
         	}
             printf("GPIO[%d] intr, val: %d\n", io_num, gpio_get_level(io_num));
         }
@@ -61,12 +62,7 @@ void vGPIOInterruptStart() {
 
     //create a queue to handle gpio event from isr
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
-
     gpio_evt_grp_pir = xEventGroupCreate();
-    xEventGroupClearBits(gpio_evt_grp_pir, BIT0);
-
-    gpio_evt_grp_rng_finder = xEventGroupCreate();
-    xEventGroupClearBits(gpio_evt_grp_pir, BIT0);
 
     //start gpio task
     xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);
@@ -78,15 +74,6 @@ void vGPIOInterruptStart() {
     //hook isr handler for specific gpio pin
     gpio_isr_handler_add(GPIO_INPUT_IO_RNG_FINDER, gpio_isr_handler, (void*) GPIO_INPUT_IO_RNG_FINDER);
 
-    /*
-    int cnt = 0;
-    while(1) {
-        printf("cnt: %d\n", cnt++);
-        vTaskDelay(1000 / portTICK_RATE_MS);
-        gpio_set_level(GPIO_OUTPUT_IO_0, cnt % 2);
-        gpio_set_level(GPIO_OUTPUT_IO_1, cnt % 2);
-    }
-    */
 
 }
 
