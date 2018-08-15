@@ -17,6 +17,14 @@
 
 #define CONFIG_LOG_DEFAULT_LEVEL 3
 
+#define LOCATION_KITCHEN_CABINET 1
+#define LOCATION_BED 2
+#define LOCATION_BOOK_SHELF 3
+
+// Define which location this will be compiled for
+#define LOCATION       LOCATION_KITCHEN_CABINET
+
+
 /**
  * Pin definitions
  *  all pins should be different
@@ -28,9 +36,21 @@
 #define LEDC_HS_CH_B_GPIO       	(26)
 
 //URI setup for MQTT based commands
+#if LOCATION == LOCATION_KITCHEN_CABINET
 #define MQTT_BASE_URI 				"home/kitchen/"
-#define MQTT_PIR     				MQTT_BASE_URI "sPIR/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cKitchen_Cabinet_Lights/"
+#elif LOCATION == LOCATION_BED
+#define MQTT_BASE_URI 				"home/livingroom/"
+#define MQTT_LIGHTS  				MQTT_BASE_URI "cBed_Lights/"
+#elif LOCATION == LOCATION_BOOK_SHELF
+#define MQTT_BASE_URI 				"home/livingroom/"
+#define MQTT_LIGHTS  				MQTT_BASE_URI "cBook_Shelf_Lights/"
+#else
+#error "LOCATION must be defined"
+#endif
+
+
+#define MQTT_PIR     				MQTT_BASE_URI "sPIR/"
 #define MQTT_IR  					MQTT_BASE_URI "strIR/"
 #define MQTT_RANGE  				MQTT_BASE_URI "iRange/"
 
