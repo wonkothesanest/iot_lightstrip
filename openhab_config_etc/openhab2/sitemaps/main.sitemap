@@ -17,9 +17,16 @@ Colorpicker item=cBook_Shelf_Lights
 Frame label="Sunrise Sunset"{
 Text item=Sunrise_Time icon="time"
 Text item=Sunset_Time icon="time"
+Text item=vSunrise_Time
+Text item=vSunset_Time 
 Text item=dtKitchen_PIR_Time icon="time"
 Text item=contKitchen_PIR icon="none"
 
+}
+Frame label="Animations and Special Buttons"{
+Switch item=rainAnimation
+Switch item=pulseAnimation
+Switch item=america
 }
 
 

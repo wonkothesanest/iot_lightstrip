@@ -1,0 +1,37 @@
+
+val String TAG = "Animations"
+
+rule "America"
+when
+  Item america received update
+then
+  logInfo(TAG, "America button")
+  var int full = 255;
+  cBed_Lights.sendCommand(HSBType::fromRGB(full, 0, 0))
+  cBook_Shelf_Lights.sendCommand(HSBType::fromRGB(0, full, 0))
+  cKitchen_Cabinet_Lights.sendCommand(HSBType::fromRGB(0, 0, full))
+end
+
+
+rule "Rain"
+when
+  Item rainAnimation received update
+then
+  logInfo(TAG, "Rain")
+  gAllLightAnimations.members.forEach[item |
+    item.sendCommand("FLASH");
+    Thread::sleep(250);
+  ]
+end
+
+
+rule "Pulse Dance"
+when
+  Item pulseAnimation received update
+then
+  logInfo(TAG, "Pulse")
+  gAllLightAnimations.members.forEach[item |
+    item.sendCommand("PULSE");
+    Thread::sleep(250);
+  ]
+end
