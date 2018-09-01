@@ -77,6 +77,7 @@
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/lwip/include/lwip"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components/espmqtt/include"/>
 									<listOptionValue builtIn="false" value="/home/dustin/workspace/esp32/esp-idf/components"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/esp-idf-components/esp_https_ota/include}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.88718426" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>

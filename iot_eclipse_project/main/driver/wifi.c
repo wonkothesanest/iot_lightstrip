@@ -38,7 +38,7 @@ static const char *TAG = "simple wifi";
 #define WEB_PORT 80
 #define WEB_URL "http://example.com/"
 #define MDNS_HOSTNAME "esp32-device"
-#define MDNS_INSTANCE_NAME "ESP32 Deviceo"
+#define MDNS_INSTANCE_NAME "ESP32 Device"
 
 
 

@@ -27,11 +27,11 @@ void vPwmSetValueRec(struct HSV hsv, bool record, bool fade);
  */
 struct HSV iPwmGetValue();
 /**
- * Turns on the lights
+ * Turns off the lights
  */
 void vPWMTurnOff();
 /**
- * Turns off the lights
+ * Turns on the lights
  */
 void vPWMTurnOn();
 

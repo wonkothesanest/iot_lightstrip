@@ -12,3 +12,6 @@ COMPONENT_SRCDIRS := \
 		. \
         driver \
         ../config
+        
+        
+COMPONENT_EMBED_TXTFILES :=  ${IDF_PATH}/examples/system/ota/server_certs/ca_cert.pem
