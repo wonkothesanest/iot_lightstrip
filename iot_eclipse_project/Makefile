@@ -3,7 +3,8 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := iot-home-project
+# PROJECT_NAME := iot-home-project
 
 include $(IDF_PATH)/make/project.mk
 
+CFLAGS+=-D LOCATION=${LOCATION}

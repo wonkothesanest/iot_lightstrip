@@ -17,7 +17,7 @@
 #include "nvs_flash.h"
 #include "config.h"
 
-static const char *TAG = "simple_ota_example";
+static const char *TAG = "ota_config";
 extern const uint8_t server_cert_pem_start[] asm("_binary_ca_cert_pem_start");
 extern const uint8_t server_cert_pem_end[] asm("_binary_ca_cert_pem_end");
 
@@ -59,7 +59,7 @@ void ota_update(void * pvParameter)
     */
     xEventGroupWaitBits(wifi_event_group, BIT0,
                         false, true, portMAX_DELAY);
-    ESP_LOGI(TAG, "Connect to Wifi ! Start to Connect to Server....");
+    ESP_LOGI(TAG, "Connect to Wifi ! Start to Connect to Server....  (%s)", FIRMWARE_UPGRADE_URL);
 
     esp_http_client_config_t config = {
         .url = FIRMWARE_UPGRADE_URL,

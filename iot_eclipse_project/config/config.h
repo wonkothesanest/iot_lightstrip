@@ -22,7 +22,9 @@
 #define LOCATION_BOOK_SHELF 3
 
 // Define which location this will be compiled for
-#define LOCATION       LOCATION_BOOK_SHELF
+// This is defined in project settings under C/C++ Build->Environment
+// then uses the make file to supply the variables (best we can do)
+// #define LOCATION       LOCATION_BOOK_SHELF
 
 
 /**
@@ -36,19 +38,22 @@
 #define LEDC_HS_CH_B_GPIO       	(26)
 
 //URI setup for MQTT based commands
-#define CONNECTION_FIRMWARE_SERVER "https://192.168.1.3:8070/"
+//#ifdef LOCATION
+//#error "hey you got somewhere " LOCATION
+//#endif
+#define CONNECTION_FIRMWARE_SERVER "https://192.168.1.47:8070/"
 #if LOCATION == LOCATION_KITCHEN_CABINET
 #define MQTT_BASE_URI 				"home/kitchen/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cKitchen_Cabinet_Lights/"
-#define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER "iot_kitchen.bin"
+#define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER "iot-kitchen.bin"
 #elif LOCATION == LOCATION_BED
 #define MQTT_BASE_URI 				"home/livingroom/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cBed_Lights/"
-#define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER "iot_bed.bin"
+#define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER  "iot-bed-windows.bin"
 #elif LOCATION == LOCATION_BOOK_SHELF
 #define MQTT_BASE_URI 				"home/livingroom/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cBook_Shelf_Lights/"
-#define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER "iot_bookshelf.bin"
+#define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER  "iot-bookshelf.bin"
 #else
 #error "LOCATION must be defined"
 #endif

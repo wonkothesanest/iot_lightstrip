@@ -13,5 +13,6 @@ COMPONENT_SRCDIRS := \
         driver \
         ../config
         
-        
+
+# Directive to know where to download the server certificates     
 COMPONENT_EMBED_TXTFILES :=  ${IDF_PATH}/examples/system/ota/server_certs/ca_cert.pem
