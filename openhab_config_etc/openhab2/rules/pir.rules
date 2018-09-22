@@ -16,8 +16,6 @@ val int fadeMinutes = 1
 val int timeoutMinutes = 2
 
 val String TAG = "PIR"
-var int lastBrightness = 100
-
 
 /**
   Sets the two timers for fade and command off
@@ -25,28 +23,32 @@ var int lastBrightness = 100
 */
 rule "PIR Changed To ON"
 when
-  Item contKitchen_PIR received command ON
+  Member of gAllPir received command ON
 then
 
-  val hsb = cKitchen_Cabinet_Lights.state as HSBType
-  val brightness = hsb.brightness.intValue
-  logInfo(TAG, "Brightness: " + brightness)
-  gAllLights.members.forEach[item |
-    logInfo(TAG, "item name: " + item.name)
-  ]
-
-  if(brightness == 0){
-    logInfo(TAG, "Setting Brightness: " + hsb.hue+","+ hsb.saturation +"," + lastBrightness)
-    cKitchen_Cabinet_Lights.sendCommand(hsb.hue+","+ hsb.saturation +"," + lastBrightness)
-  }else{
-    lastBrightness = brightness
+  if(vTimeOfDay.state == "DAY" ||
+    vTimeOfDay.state == "AFTERNOON"){
+    //Do nothing
+    return;
+  }else if(vTimeOfDay.state == "EVENING" ||
+    vTimeOfDay.state == "NIGHT" ||
+    vTimeOfDay.state == "MORNING"){
+    //Set normal Lights
+    gAllLights.members.forEach[item |
+      logInfo(TAG, "item name: " + item.name)
+      item.sendCommand(ON)
+    ]
+  }else if(vTimeOfDay.state == "BED"){
+    //Set dimmed out bathroom lights
+    cKitchen_Cabinet_Lights.sendCommand(ON);
   }
 
   if(motionTimer === null){
     logInfo(TAG, "Creating Timer")
     motionTimer = createTimer(now.plusMinutes(timeoutMinutes), [|
-      logInfo(TAG, "Fade Timer has triggered")
-      contKitchen_PIR.sendCommand(OFF)
+      logInfo(TAG, "Motion Timer has triggered")
+      triggeringItem.sendCommand(OFF)
+      motionTimer.cancel()
       motionTimer = null
     ])
   }else{
@@ -58,8 +60,10 @@ then
     fadeTimer = createTimer(now.plusMinutes(fadeMinutes), [|
       logInfo(TAG, "Fade Timer has triggered")
       gAllLightAnimations.members.forEach[item |
-        item.sendCommand("ANIM1")
+        item.sendCommand("PULSE")
       ]
+      fadeTimer.cancel()
+      fadeTimer = null
     ])
   }else{
     logInfo(TAG, "Reschedule Fade Timer")
@@ -67,8 +71,6 @@ then
   }
 
 end
-
-
 
 /**
   if the PIR gets triggered to off
@@ -78,7 +80,7 @@ end
 */
 rule "PIR Changed To OFF"
 when
-  Item contKitchen_PIR received command OFF
+  Member of gAllPir received command OFF
 then
   logInfo(TAG, "Turning off lights")
   gAllLights.members.forEach[item |

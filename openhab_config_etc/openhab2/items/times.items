@@ -1,0 +1,13 @@
+String vTimeOfDay "Current Time of Day [MAP(weather.map):%s]" <tod>
+
+DateTime vMorning_Time "Morning [%1$tH:%1$tM]" <sunrise>
+
+DateTime vSunrise_Time "Day [%1$tH:%1$tM]" <sun> { channel="astro:sun:home:rise#start" }
+
+DateTime vSunset_Time "Evening [%1$tH:%1$tM]" <sunset> { channel="astro:sun:home:set#start" }
+
+DateTime vNight_Time "Night [%1$tH:%1$tM]" <moon>
+
+DateTime vBed_Time "Bed [%1$tH:%1$tM]" <bedroom_blue>
+
+DateTime vEvening_Time "Afternoon [ %1$tH:%1$tM]" <sunset> { channel="astro:sun:minus90:set#start" }

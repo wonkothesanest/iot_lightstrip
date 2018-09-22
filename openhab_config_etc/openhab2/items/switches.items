@@ -21,8 +21,8 @@ Group:Color gSwitchtest "Switches"
 
 // Group For All Lights
 Group gAllLights "All Lights"
+Group:Switch:OR(ON,OFF) gAllPir "All Motion Detectors"
 Group gAllLightAnimations "All Animations"
-
 
 
 //# Kitchen Lights
@@ -31,7 +31,6 @@ Color cKitchen_Cabinet_Lights "Kitchen Lights" (gAllLights) {mqtt="
 >[broker:home/kitchen/cKitchen_Cabinet_Lights/state:state:*:default],
 <[broker:home/kitchen/cKitchen_Cabinet_Lights/state:state:*:default]
 "}
-
 String sKitchen_Cabinet_Lights_Anim "Kitchen Lights Animation" (gAllLightAnimations) {mqtt="
 >[broker:home/kitchen/cKitchen_Cabinet_Lights/animation:command:*:default],
 >[broker:home/kitchen/cKitchen_Cabinet_Lights/animation:state:*:default],
@@ -44,12 +43,22 @@ Color cBed_Lights "Bed and Window Lights" (gAllLights) {mqtt="
 >[broker:home/livingroom/cBed_Lights/state:state:*:default],
 <[broker:home/livingroom/cBed_Lights/state:state:*:default]
 "}
+String sBed_Lights_Anim "Bed Lights Animation" (gAllLightAnimations) {mqtt="
+>[broker:home/livingroom/cBed_Lights/animation:command:*:default],
+>[broker:home/livingroom/cBed_Lights/animation:state:*:default],
+<[broker:home/livingroom/cBed_Lights/animation:state:*:default]
+"}
 
-//# Kitchen Lights
+//# Book Shelf
 Color cBook_Shelf_Lights "Book Shelf Lights" (gAllLights) {mqtt="
 >[broker:home/livingroom/cBook_Shelf_Lights/command:command:*:default],
 >[broker:home/livingroom/cBook_Shelf_Lights/state:state:*:default],
 <[broker:home/livingroom/cBook_Shelf_Lights/state:state:*:default]
+"}
+String sBook_Shelf_Lights_Anim "Book Shelf Lights Animation" (gAllLightAnimations) {mqtt="
+>[broker:home/livingroom/cBook_Shelf_Lights/animation:command:*:default],
+>[broker:home/livingroom/cBook_Shelf_Lights/animation:state:*:default],
+<[broker:home/livingroom/cBook_Shelf_Lights/animation:state:*:default]
 "}
 
 
@@ -57,12 +66,19 @@ Color cBook_Shelf_Lights "Book Shelf Lights" (gAllLights) {mqtt="
 DateTime Sunrise_Time       "Sunrise [%1$tH:%1$tM]"       { channel="astro:sun:home:rise#start" }
 DateTime Sunset_Time        "Sunset [%1$tH:%1$tM]"        { channel="astro:sun:home:set#end" }
 
-// Time of last Motion detected
-DateTime Motion_Detected_Timed
 
 //PIR sensor for motion
-Switch contKitchen_PIR "Kitchen Motion Detector" {mqtt="
+Switch contKitchen_PIR "Kitchen Motion Detector" (gAllPir) {mqtt="
 <[broker:home/kitchen/sPIR/command:command:ON:1],
 <[broker:home/kitchen/sPIR/command:command:OFF:0]
 "}
+Switch contLiving_PIR "Living Room Motion Detector" (gAllPir) {mqtt="
+<[broker:home/livingroom/sPIR/command:command:ON:1],
+<[broker:home/livingroom/sPIR/command:command:OFF:0]
+"}
+
+
+// Time of last Motion detected
+DateTime Motion_Detected_Timed
+
 DateTime dtKitchen_PIR_Time
