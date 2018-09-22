@@ -86,8 +86,16 @@ void hsv_cmd_task(void *pvParameter){
 				}
 
 			}else{
-				//TODO: dim up, dim down
-				ESP_LOGE(TAG, "Command Not Found [%s]", hsv_light_queue_buff);
+				//No commas?
+				int brightness;
+
+				if(str2int(&brightness, (char*)(char*)&hsv_light_queue_buff, 10)!= STR2INT_SUCCESS ){
+					ESP_LOGE(TAG, "Command Not Found [%s]", hsv_light_queue_buff);
+				}else{
+					hsv = iPwmGetValue();
+					hsv.v = (double)brightness/100.0;
+					vPwmSetValue(hsv);
+				}
 			}
 		}else{
 			ESP_LOGE(TAG, "Queue was not able to receive");
