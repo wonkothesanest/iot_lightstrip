@@ -12,6 +12,7 @@
 #include "esp_https_ota.h"
 #include "esp_http_client.h"
 #include "wifi.h"
+#include "mqtt_test.h"
 
 #include "nvs.h"
 #include "nvs_flash.h"
@@ -68,7 +69,9 @@ void ota_update(void * pvParameter)
     };
     esp_err_t ret = esp_https_ota(&config);
     if (ret == ESP_OK) {
-        //esp_restart();
+    	vMqttPublish(MQTT_RESTART_STATUS, "", 0);
+        vTaskDelay(60000 / portTICK_PERIOD_MS);
+        esp_restart();
     } else {
         ESP_LOGE(TAG, "Firmware Upgrades Failed");
     }
