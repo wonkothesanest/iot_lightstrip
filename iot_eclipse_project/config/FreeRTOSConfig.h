@@ -111,7 +111,7 @@ int xt_clock_freq(void) __attribute__((deprecated));
 
 
 /* Required for configuration-dependent settings */
-#include "xtensa_config.h"
+#include "freertos/xtensa_config.h"
 
 
 /* configASSERT behaviour */

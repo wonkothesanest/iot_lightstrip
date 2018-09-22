@@ -7,6 +7,7 @@
  *
  * */
 #include <stdio.h>
+#include "FreeRTOSConfig.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
@@ -32,12 +33,12 @@ void app_main()
 {
     printf("Hello world!\n");
 
+    vPwmStart();
+    vGPIOInterruptStart();
     vWifiStart();
     vOtaStart();
     vMqttStart();
-    vPwmStart();
     vStartLightController();
-    vGPIOInterruptStart();
     vPirStart();
     vAnimationStart();
 
