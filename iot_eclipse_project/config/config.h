@@ -62,6 +62,7 @@
 #define MQTT_PIR     				MQTT_BASE_URI "sPIR/"
 #define MQTT_IR  					MQTT_BASE_URI "strIR/"
 #define MQTT_RANGE  				MQTT_BASE_URI "iRange/"
+#define MQTT_RESTART_STATUS			MQTT_BASE_URI "restart/status"
 
 #define MQTT_TOPIC_HSV_CMD			MQTT_LIGHTS "command"
 #define MQTT_TOPIC_HSV_STATUS		MQTT_LIGHTS "status"
