@@ -15,9 +15,10 @@
 #include "config.h"
 #include "freertos/event_groups.h"
 #include "mqtt_test.h"
-
+#include "esp_log.h"
 
 #define ESP_INTR_FLAG_DEFAULT 0
+static const char * TAG = "gpioint";
 
 
 static void IRAM_ATTR gpio_isr_handler(void* arg)
@@ -37,13 +38,14 @@ static void gpio_task_example(void* arg)
         	}else if(io_num == GPIO_INPUT_IO_RNG_FINDER){
         		//xEventGroupSetBits(gpio_evt_grp_rng_finder, BIT0);
         	}
-            printf("GPIO[%d] intr, val: %d\n", io_num, gpio_get_level(io_num));
+            ESP_LOGD(TAG, "GPIO[%d] intr, val: %d\n", io_num, gpio_get_level(io_num));
         }
     }
 }
 
 
 void vGPIOInterruptStart() {
+	ESP_LOGI(TAG, "Starting");
     gpio_config_t io_conf;
     //interrupt of rising edge
     io_conf.intr_type = GPIO_PIN_INTR_POSEDGE;
@@ -74,6 +76,7 @@ void vGPIOInterruptStart() {
     //hook isr handler for specific gpio pin
     gpio_isr_handler_add(GPIO_INPUT_IO_RNG_FINDER, gpio_isr_handler, (void*) GPIO_INPUT_IO_RNG_FINDER);
 
+	ESP_LOGI(TAG, "Started");
 
 }
 

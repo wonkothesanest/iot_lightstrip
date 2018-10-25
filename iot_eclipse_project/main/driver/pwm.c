@@ -109,6 +109,7 @@ void pwm_task(void *pvParameter) {
 
 void vPwmStart() {
 
+	ESP_LOGD(TAG, "Starting");
 	/*
 	 * Prepare and set configuration of timers
 	 * that will be used by LED Controller
@@ -131,6 +132,7 @@ void vPwmStart() {
 	ledc_fade_func_install(0);
 
 	//xTaskCreate(&pwm_task, "PWMTask", 2048, NULL, 5, NULL);
+	ESP_LOGD(TAG, "Finished");
 }
 
 static uint32_t uiPwmConvertPercent(double v){

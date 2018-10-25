@@ -136,7 +136,7 @@ void anim_cmd_task(void *pvParameter){
 
 
 void vStartLightController() {
-
+	ESP_LOGI(TAG, "Starting");
 	hsv_light_queue = xQueueCreate(10, HSV_LIGHT_QUEUE_SZ);
 	anim_light_queue = xQueueCreate(10, HSV_LIGHT_QUEUE_SZ);
 	vMqttWaitForConnection();
@@ -144,6 +144,7 @@ void vStartLightController() {
     vMqttSubscribe(MQTT_TOPIC_HSV_ANIM, &anim_light_queue);
     xTaskCreate(&hsv_cmd_task, "hsv_task", 2048, NULL, 5, NULL);
     xTaskCreate(&anim_cmd_task, "anim_task", 2048, NULL, 5, NULL);
+	ESP_LOGI(TAG, "Finished");
 
 }
 

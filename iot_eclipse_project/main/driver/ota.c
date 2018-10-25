@@ -51,9 +51,14 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
+/**
+ * Updates the OTA partition if we can get to a server
+ * then restarts the ESP wifi, also publishes message to
+ * MQTT when finished so we can pull down the server.
+ */
 void ota_update(void * pvParameter)
 {
-    ESP_LOGI(TAG, "Starting OTA example...");
+    ESP_LOGI(TAG, "Starting OTA update...");
 
     /* Wait for the callback to set the CONNECTED_BIT in the
        event group.
@@ -80,6 +85,8 @@ void ota_update(void * pvParameter)
     }
 }
 void vOtaStart() {
+	ESP_LOGI(TAG, "Starting");
+
     // Initialize NVS.
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
@@ -92,6 +99,7 @@ void vOtaStart() {
     ESP_ERROR_CHECK( err );
 
     xTaskCreate(&ota_update, "ota_task", 8192, NULL, 5, NULL);
+	ESP_LOGI(TAG, "Started");
 
 }
 
