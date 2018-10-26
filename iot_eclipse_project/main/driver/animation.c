@@ -83,14 +83,14 @@ void vAnimationLoop(void * pvParameters){
 		//Pulse
 		case ANIM_TYPE_PULSE:
 				if(fade_in){
-					curValue.v += 0.01;
+					curValue.v += 0.1;
 					if(curValue.v > max_val){
 						curValue.v = max_val;
 						fade_in = !fade_in;
 					}
-					delayTime = (R1/100)/portTICK_PERIOD_MS;
+					delayTime = (R1/10)/portTICK_PERIOD_MS;
 				}else{
-					curValue.v -= 0.01;
+					curValue.v -= 0.1;
 					if(curValue.v < min_val){
 						curValue.v = min_val;
 						fade_in = !fade_in;
@@ -98,7 +98,7 @@ void vAnimationLoop(void * pvParameters){
 							R3--;
 						}
 					}
-					delayTime = (R2/100)/portTICK_PERIOD_MS;
+					delayTime = (R2/10)/portTICK_PERIOD_MS;
 				}
 				vPwmSetValueRec(curValue, false, false);
 				if(R3 == 0){
