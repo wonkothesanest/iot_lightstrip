@@ -13,6 +13,7 @@
 #include "driver/gpio.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
+#include "esp_log.h"
 
 #include "driver/wifi.h"
 #include "driver/blink.h"
@@ -28,10 +29,17 @@
 
 #define BLINK_GPIO 2
 
+static const char *TAG = "main";
 
 void app_main()
 {
-    printf("Hello world!\n");
+	ESP_LOGI(TAG, "Application Main is Starting up");
+	ESP_LOGI(TAG, "App: configQUEUE_REGISTRY_SIZE:        %d", configQUEUE_REGISTRY_SIZE );
+//	ESP_LOGI(TAG, "App: configTOTAL_HEAP_SIZE:            %d", configTOTAL_HEAP_SIZE );
+	ESP_LOGI(TAG, "App: configISR_STACK_SIZE:             %d", configISR_STACK_SIZE );
+	ESP_LOGI(TAG, "App: configMINIMAL_STACK_SIZE:         %d", configMINIMAL_STACK_SIZE );
+	ESP_LOGI(TAG, "App: configTICK_RATE_HZ:               %d", configTICK_RATE_HZ );
+	ESP_LOGI(TAG, "App: configCHECK_FOR_STACK_OVERFLOW:   %d", configCHECK_FOR_STACK_OVERFLOW );
 
     vPwmStart();
     vGPIOInterruptStart();
@@ -44,12 +52,14 @@ void app_main()
 
     //blink_start();
 
+    ESP_LOGI(TAG, "Application has started");
 
     for(;;){
     	vTaskDelay(portMAX_DELAY);
     }
 
-    printf("Restarting now.\n");
+    ESP_LOGI(TAG, "Application Is Restarting");
+
     fflush(stdout);
     esp_restart();
 }

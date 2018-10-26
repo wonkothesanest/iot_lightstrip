@@ -24,8 +24,6 @@
 
 
 static const char *TAG = "mqtt";
-const char * sub_topic = "/home/light/command";
-const char * pub_topic = "/home/mqtt/pub";
 int mqtt_queue_subscribe_index = 0;
 struct mqtt_user_context mqtt_context;
 
@@ -83,21 +81,9 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
             if(!found_queue){
             	ESP_LOGE(TAG, "Did not find Queue topic subscribed to");
             }
-            /*
-            if(memcmp(event->topic, sub_topic, strlen(sub_topic)-1)== 0){
-            	if(memcmp(event->data, "0", sizeof("0")-1) == 0){
-                    ESP_LOGI(TAG, "Turning LED OFF");
-                    gpio_set_level(2, 0);
 
-            	}else{
-                    ESP_LOGI(TAG, "Turning LED ON");
-                    gpio_set_level(2, 1);
-            	}
-            }
-            */
-
-            printf("TOPIC=%.*s [%d]\r\n", event->topic_len, event->topic, event->topic_len);
-            printf("DATA=%.*s [%d]\r\n", event->data_len, event->data, event->data_len);
+            ESP_LOGI(TAG, "TOPIC=%.*s [%d]\r\n", event->topic_len, event->topic, event->topic_len);
+            ESP_LOGI(TAG, "DATA=%.*s [%d]\r\n", event->data_len, event->data, event->data_len);
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -107,6 +93,8 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 }
 
 void vMqttStart(){
+	ESP_LOGI(TAG, "Starting");
+
 
 	//Setup the user context
 	mqtt_context.queue_sub_ind_ptr = &mqtt_queue_subscribe_index;
@@ -133,6 +121,7 @@ void vMqttStart(){
 	};
 	mqtt_client = esp_mqtt_client_init(&mqtt_cfg);
 	esp_mqtt_client_start(mqtt_client);
+	ESP_LOGI(TAG, "Finished");
 
 }
 void vMqttWaitForConnection(){

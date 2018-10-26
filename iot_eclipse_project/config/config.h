@@ -37,10 +37,19 @@
 #define LEDC_HS_CH_G_GPIO       	(13)
 #define LEDC_HS_CH_B_GPIO       	(26)
 
+/**
+ * PIR definitions
+ * PIR_WAIT_BETWEEN_SIGNALS_MS sets the time after a signal is
+ * triggered to wait until it will clear the bits and be able
+ * to read another trigger.
+ */
+#define PIR_WAIT_BETWEEN_SIGNALS_MS 10000
+
 //URI setup for MQTT based commands
 //#ifdef LOCATION
 //#error "hey you got somewhere " LOCATION
 //#endif
+#define OPENHAB_SERVER_NAME "osmc"
 #define CONNECTION_FIRMWARE_SERVER "https://192.168.1.47:8070/"
 #if LOCATION == LOCATION_KITCHEN_CABINET
 #define MQTT_BASE_URI 				"home/kitchen/"

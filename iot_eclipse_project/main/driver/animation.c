@@ -15,6 +15,18 @@
 
 static const char * TAG = "ANIM";
 
+//Definitions for animation byte flags
+#define ANIM_TYPE_FADE 1<<0
+#define ANIM_TYPE_FLASH 1<<1
+#define ANIM_TYPE_PULSE 1<<2
+#define ANIM_TYPE_RANDOM 1<<3
+#define ANIM_TYPE_FADE 0<<1
+#define ANIM_TYPE_FADE 0<<1
+#define ANIM_TYPE_FADE 0<<1
+#define ANIM_TYPE_FADE 0<<1
+#define ANIM_TYPE_FADE 0<<1
+#define ANIM_TYPE_FADE 0<<1
+
 struct HSV origValue;
 struct HSV curValue;
 uint8_t anim_reg = 0;
@@ -38,7 +50,7 @@ void vAnimationLoop(void * pvParameters){
 
 		switch(anim_reg){
 		//Fade
-		case 1<<0:
+		case ANIM_TYPE_FADE:
 				//100 steps per R1 ms
 				curValue.v -= 0.01;
 				if(curValue.v <= 0.0){
@@ -49,7 +61,7 @@ void vAnimationLoop(void * pvParameters){
 				delayTime = (R1/100)/portTICK_PERIOD_MS;
 				break;
 		//Flash
-		case 1<<1:
+		case ANIM_TYPE_FLASH:
 				if(flash_on){
 					curValue.v = 0.0;
 					vPwmSetValueRec(curValue, false, false);
@@ -69,7 +81,7 @@ void vAnimationLoop(void * pvParameters){
 				}
 				break;
 		//Pulse
-		case 1<<2:
+		case ANIM_TYPE_PULSE:
 				if(fade_in){
 					curValue.v += 0.01;
 					if(curValue.v > max_val){
@@ -94,7 +106,7 @@ void vAnimationLoop(void * pvParameters){
 				}
 				break;
 		//Random
-		case 1<<3:
+		case ANIM_TYPE_RANDOM:
 				curValue.h = rand() % 360;
 				curValue.s = (double)(rand() % 100)/100.0;
 				vPwmSetValueRec(curValue, false, true);
@@ -113,10 +125,12 @@ bool bAnimationRunning(){
 }
 
 void vAnimationStart() {
+	ESP_LOGI(TAG, "Starting");
 	anim_reg = 0;
 	animation_semaphore = xSemaphoreCreateBinary();
 	xSemaphoreGive(animation_semaphore);
     xTaskCreate(&vAnimationLoop, "animation_task", 2048, NULL, 5, NULL);
+	ESP_LOGI(TAG, "Finished");
 }
 
 void vAnimationStop() {
@@ -139,25 +153,25 @@ void vAnimationSetup(uint8_t anim, int r1, int r2, int r3){
 }
 
 void vAnimationFade(int ms) {
-	vAnimationSetup(1<<0, ms, -1, -1);
+	vAnimationSetup(ANIM_TYPE_FADE, ms, -1, -1);
 }
 
 void vAnimationFlash(int onMs, int offMs) {
-	vAnimationSetup(1<<1, onMs, offMs, -1);
+	vAnimationSetup(ANIM_TYPE_FLASH, onMs, offMs, -1);
 }
 
 void vAnimationFlashCnt(int onMs, int offMs, int count) {
-	vAnimationSetup(1<<1, onMs, offMs, count);
+	vAnimationSetup(ANIM_TYPE_FLASH, onMs, offMs, count);
 }
 
 void vAnimationPulse(int onMs, int offMs) {
-	vAnimationSetup(1<<2, onMs, offMs, -1);
+	vAnimationSetup(ANIM_TYPE_PULSE, onMs, offMs, -1);
 }
 
 void vAnimationPulseCnt(int onMs, int offMs, int count) {
-	vAnimationSetup(1<<2, onMs, offMs, count);
+	vAnimationSetup(ANIM_TYPE_PULSE, onMs, offMs, count);
 }
 
 void vAnimationRandom(int change_ms) {
-	vAnimationSetup(1<<3, change_ms, -1, -1);
+	vAnimationSetup(ANIM_TYPE_RANDOM, change_ms, -1, -1);
 }

@@ -262,8 +262,10 @@ static void query_mdns_host(const char * host_name)
         ESP_LOGE(TAG, "Query Failed: %s", esp_err_to_name(err));
         return;
     }else{
+		ESP_LOGI(TAG, "openhab host name received");
     	memcpy(&openhab_address, &addr, sizeof(addr));
     	xEventGroupSetBits(openhab_lookup_event_group, BIT0);
+
     }
 
     ESP_LOGI(TAG, IPSTR, IP2STR(&addr));
@@ -281,7 +283,7 @@ void vWifiStart() {
 
 	vWifiWaitForConnection();
 	while(1){
-		query_mdns_host("osmc");
+		query_mdns_host(OPENHAB_SERVER_NAME);
 		EventBits_t uxBits = xEventGroupWaitBits(openhab_lookup_event_group, BIT0, false, true, 500);
 		if((uxBits & BIT0) != 0){
 			ESP_LOGI(TAG, "Attained openhab host name");
