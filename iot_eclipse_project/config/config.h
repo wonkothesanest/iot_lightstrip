@@ -64,6 +64,10 @@
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cBook_Shelf_Lights/"
 #define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER  "iot-bookshelf.bin"
 #else
+#define MQTT_BASE_URI 				"home/room/"
+#define MQTT_LIGHTS  				MQTT_BASE_URI "lights/"
+#define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER "iot-identification.bin"
+
 #error "LOCATION must be defined"
 #endif
 
@@ -77,6 +81,7 @@
 #define MQTT_TOPIC_HSV_STATUS		MQTT_LIGHTS "status"
 #define MQTT_TOPIC_HSV_ANIM			MQTT_LIGHTS "animation"
 #define MQTT_TOPIC_PIR_CMD			MQTT_PIR "command"
+#define MQTT_TOPIC_RES_CMD          MQTT_LIGHTS "restart"
 /*
 #define MQTT_TOPIC_IR_CMD			MQTT_IR "command"
 #define MQTT_TOPIC_RANGE_STATUS		MQTT_RANGE "status"

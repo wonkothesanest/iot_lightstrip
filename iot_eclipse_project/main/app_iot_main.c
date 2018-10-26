@@ -25,6 +25,7 @@
 #include "driver/pir.h"
 #include "driver/animation.h"
 #include "driver/ota.h"
+#include "driver/iot_system.h"
 //#include "FreeRTOSConfig.h"
 
 #define BLINK_GPIO 2
@@ -49,6 +50,7 @@ void app_main()
     vStartLightController();
     vPirStart();
     vAnimationStart();
+    vSystemStart();
 
     //blink_start();
 
