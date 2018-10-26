@@ -29,7 +29,6 @@ struct mqtt_user_context mqtt_context;
 
 static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 {
-    esp_mqtt_client_handle_t client = event->client;
     //counter for looping messages
     int queue_ind_cntr = 0;
     //bool for finding the queue
@@ -70,9 +69,12 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
                 	}else{
                 		//we have the right topic now we copy over the data into the queue
                 		// last character should be null for string termination
-                		event->data[event->data_len] = '\0';
+                		char * data = malloc(event->data_len+1);
+                		memcpy(data, event->data, event->data_len + 1);
+                		data[event->data_len] = '\0';
                 		ESP_LOGI(TAG, "Found Topic [%s] appending data to its queue with length [%d]",mqtt_queue_arr[queue_ind_cntr].topic,event->data_len);
-                		xQueueSendToBack(*(mqtt_queue_arr[queue_ind_cntr].evt_queue), (void*)event->data, 10);
+                		xQueueSendToBack(*(mqtt_queue_arr[queue_ind_cntr].evt_queue), (void*)data, 10);
+                		free(data);
                 		found_queue = true;
                 		break;
                 	}
