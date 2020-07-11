@@ -26,7 +26,6 @@
 // then uses the make file to supply the variables (best we can do)
 // #define LOCATION       LOCATION_BOOK_SHELF
 
-
 /**
  * Pin definitions
  *  all pins should be different
@@ -49,8 +48,9 @@
 //#ifdef LOCATION
 //#error "hey you got somewhere " LOCATION
 //#endif
-#define OPENHAB_SERVER_NAME "osmc"
-#define CONNECTION_FIRMWARE_SERVER "https://192.168.1.47:8070/"
+#define OPENHAB_SERVER_NAME "raspberrypi"
+#define CONNECTION_LAPTOP_IP "192.168.1.133"
+#define CONNECTION_FIRMWARE_SERVER "https://" CONNECTION_LAPTOP_IP ":8070/"
 #if LOCATION == LOCATION_KITCHEN_CABINET
 #define MQTT_BASE_URI 				"home/kitchen/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cKitchen_Cabinet_Lights/"
@@ -71,7 +71,6 @@
 #error "LOCATION must be defined"
 #endif
 
-
 #define MQTT_PIR     				MQTT_BASE_URI "sPIR/"
 #define MQTT_IR  					MQTT_BASE_URI "strIR/"
 #define MQTT_RANGE  				MQTT_BASE_URI "iRange/"
@@ -80,19 +79,17 @@
 #define MQTT_TOPIC_HSV_CMD			MQTT_LIGHTS "command"
 #define MQTT_TOPIC_HSV_STATUS		MQTT_LIGHTS "status"
 #define MQTT_TOPIC_HSV_ANIM			MQTT_LIGHTS "animation"
-#define MQTT_TOPIC_PIR_CMD			MQTT_PIR "command"
+#define MQTT_TOPIC_PIR_CMD			MQTT_PIR "state"
 #define MQTT_TOPIC_RES_CMD          MQTT_LIGHTS "restart"
 /*
-#define MQTT_TOPIC_IR_CMD			MQTT_IR "command"
-#define MQTT_TOPIC_RANGE_STATUS		MQTT_RANGE "status"
-*/
+ #define MQTT_TOPIC_IR_CMD			MQTT_IR "command"
+ #define MQTT_TOPIC_RANGE_STATUS		MQTT_RANGE "status"
+ */
 
 #define ANIM_CMD_NORMAL "STOP"
 #define ANIM_CMD_FADE "FADE"
 #define ANIM_CMD_PULSE "PULSE"
 #define ANIM_CMD_FLASH "FLASH"
 #define ANIM_CMD_RANDOM "RANDOM"
-
-
 
 #endif /* CONFIG_CONFIG_H_ */

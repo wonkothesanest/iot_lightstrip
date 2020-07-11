@@ -54,6 +54,7 @@ static int hsv_parse_csv(int * ret, char * buff){
 }
 
 void hsv_cmd_task(void *pvParameter){
+	ESP_LOGI(TAG, "Received a command");
 	struct HSV hsv = {
 		.h = 0.0,
 		.s = 0.0,

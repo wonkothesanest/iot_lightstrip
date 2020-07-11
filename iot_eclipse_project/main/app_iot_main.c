@@ -26,6 +26,7 @@
 #include "driver/animation.h"
 #include "driver/ota.h"
 #include "driver/iot_system.h"
+#include "driver/udp_logging/include/udp_logging.h"
 //#include "FreeRTOSConfig.h"
 
 #define BLINK_GPIO 2
@@ -42,19 +43,33 @@ void app_main()
 	ESP_LOGI(TAG, "App: configTICK_RATE_HZ:               %d", configTICK_RATE_HZ );
 	ESP_LOGI(TAG, "App: configCHECK_FOR_STACK_OVERFLOW:   %d", configCHECK_FOR_STACK_OVERFLOW );
 
+	ESP_LOGI(TAG, "PWM");
     vPwmStart();
+	ESP_LOGI(TAG, "GPIO");
     vGPIOInterruptStart();
+	ESP_LOGI(TAG, "WIFI");
     vWifiStart();
+	ESP_LOGI(TAG, "OTA");
     vOtaStart();
+	ESP_LOGI(TAG, "MQTT");
     vMqttStart();
+	ESP_LOGI(TAG, "LIGHT");
     vStartLightController();
+	ESP_LOGI(TAG, "PIR");
     vPirStart();
+	ESP_LOGI(TAG, "ANIM");
     vAnimationStart();
+	ESP_LOGI(TAG, "SYSTEM");
     vSystemStart();
+	ESP_LOGI(TAG, "UDP");
+    udp_logging_init(CONNECTION_LAPTOP_IP, 1337);
+
 
     //blink_start();
 
     ESP_LOGI(TAG, "Application has started");
+
+
 
     for(;;){
     	vTaskDelay(portMAX_DELAY);

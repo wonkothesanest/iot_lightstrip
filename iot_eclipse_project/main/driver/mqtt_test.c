@@ -111,7 +111,8 @@ void vMqttStart(){
 	ESP_LOGI(TAG, "Waiting for bits from openhab name");
 	xEventGroupWaitBits(openhab_lookup_event_group, BIT0, false, true, portMAX_DELAY);
 	ESP_LOGI(TAG, "Finished waiting for bits from openhab name");
-	char addr[20];
+	char addr[30];
+	memset(&addr, '\0', sizeof addr);
 	sprintf(&addr, "mqtt://%d.%d.%d.%d", IP2STR(&openhab_address));
 	const esp_mqtt_client_config_t mqtt_cfg = {
 		.uri = (const char *)&addr,

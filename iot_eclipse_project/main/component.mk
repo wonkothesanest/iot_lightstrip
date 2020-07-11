@@ -6,12 +6,14 @@
 COMPONENT_ADD_INCLUDEDIRS := \
 		. \
         driver \
-        ../config
+        ../config \
+        driver/udp_logging/include
 
 COMPONENT_SRCDIRS := \
 		. \
         driver \
-        ../config
+        ../config \
+        driver/udp_logging
         
 
 # Directive to know where to download the server certificates     
