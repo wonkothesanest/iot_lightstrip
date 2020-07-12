@@ -21,17 +21,21 @@ import datetime
 UDP_IP = "0.0.0.0"
 UDP_PORT = 1337
 
+def lprint(string):
+    print(string)
+    with open('/home/pi/esp_logs.log', 'a+') as logfile:
+         logfile.write(string + "\n")
+
+
 sock = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
 sock.bind( (UDP_IP, UDP_PORT) )
 
-print("+============================+")
-print("|  ESP32 UDP Logging Server  |")
-print("+============================+")
-print("")
+lprint("+============================+")
+lprint("|  ESP32 UDP Logging Server  |")
+lprint("+============================+")
+lprint("")
 
 while True:
 	data, addr = sock.recvfrom(1024)
-	print(addr[0] + ": ",  datetime.datetime.now(), data.decode(), end='')
-	with open('~/esp_logs.log', 'w') as logfile:
-	    logfile.write(addr[0] + ": ",  datetime.datetime.now(), data.decode(), end='')
+	lprint(addr[0] + ": " +  str(datetime.datetime.now()) +  data.decode() + '')
 
