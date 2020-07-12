@@ -55,18 +55,22 @@
 #define MQTT_BASE_URI 				"home/kitchen/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cKitchen_Cabinet_Lights/"
 #define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER "iot-kitchen.bin"
+#define DEVICE_NAME 				"iot-kitchen"
 #elif LOCATION == LOCATION_BED
 #define MQTT_BASE_URI 				"home/livingroom/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cBed_Lights/"
 #define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER  "iot-bed-windows.bin"
+#define DEVICE_NAME 				"iot-bed-windows"
 #elif LOCATION == LOCATION_BOOK_SHELF
 #define MQTT_BASE_URI 				"home/livingroom/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cBook_Shelf_Lights/"
 #define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER  "iot-bookshelf.bin"
+#define DEVICE_NAME 				"iot-bookshelf"
 #else
 #define MQTT_BASE_URI 				"home/room/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "lights/"
 #define FIRMWARE_UPGRADE_URL		CONNECTION_FIRMWARE_SERVER "iot-identification.bin"
+#define DEVICE_NAME 				"DNS-Name"
 
 #error "LOCATION must be defined"
 #endif
