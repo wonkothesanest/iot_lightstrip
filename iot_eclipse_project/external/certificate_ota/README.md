@@ -5,7 +5,8 @@ The CN / FQDN needs to be filled out to the fully qualified domain name that wil
 This same FQDN needs to be used in the request for the certificate to work.
 
 To Generate the Certificate:
-openssl req -x509 -newkey rsa:2048 -keyout ca_key.pem -out ca_cert.pem -days 365
+openssl req -x509 -newkey rsa:2048 -keyout ca_key.pem -out ca_cert.pem -days 3650
+When changing up the certificate file make sure to clean the build. (possibly)
 
 To Start the https server to host the file:
 #openssl s_server -WWW -key ca_key.pem -cert ca_cert.pem -port 8070

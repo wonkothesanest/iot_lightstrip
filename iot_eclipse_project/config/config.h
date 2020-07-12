@@ -49,8 +49,7 @@
 //#error "hey you got somewhere " LOCATION
 //#endif
 #define OPENHAB_SERVER_NAME "raspberrypi"
-#define CONNECTION_LAPTOP_IP "192.168.1.133"
-#define CONNECTION_FIRMWARE_SERVER "https://" CONNECTION_LAPTOP_IP ":8070/"
+#define CONNECTION_FIRMWARE_SERVER "https://raspberrypi:8000/"
 #if LOCATION == LOCATION_KITCHEN_CABINET
 #define MQTT_BASE_URI 				"home/kitchen/"
 #define MQTT_LIGHTS  				MQTT_BASE_URI "cKitchen_Cabinet_Lights/"

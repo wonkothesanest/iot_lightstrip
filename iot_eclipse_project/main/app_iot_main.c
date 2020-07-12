@@ -62,8 +62,11 @@ void app_main()
 	ESP_LOGI(TAG, "SYSTEM");
     vSystemStart();
 	ESP_LOGI(TAG, "UDP");
-    udp_logging_init(CONNECTION_LAPTOP_IP, 1337);
 
+	char addr[30];
+	memset(&addr, '\0', sizeof addr);
+	sprintf(&addr, "%d.%d.%d.%d", IP2STR(&openhab_address));
+    udp_logging_init(&addr, 1337);
 
     //blink_start();
 
