@@ -75,7 +75,8 @@ void ota_update(void * pvParameter)
     esp_err_t ret = esp_https_ota(&config);
     if (ret == ESP_OK) {
     	vMqttPublish(MQTT_RESTART_STATUS, "", 0);
-        vTaskDelay(60000 / portTICK_PERIOD_MS);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        ESP_LOGI(TAG, "Finished updating. Restarting.");
         esp_restart();
     } else {
         ESP_LOGE(TAG, "Firmware Upgrades Failed");

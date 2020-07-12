@@ -84,6 +84,7 @@
 #define MQTT_TOPIC_HSV_ANIM			MQTT_LIGHTS "animation"
 #define MQTT_TOPIC_PIR_CMD			MQTT_PIR "state"
 #define MQTT_TOPIC_RES_CMD          MQTT_LIGHTS "restart"
+#define MQTT_TOPIC_ALL_RES_CMD      "home/restart"
 /*
  #define MQTT_TOPIC_IR_CMD			MQTT_IR "command"
  #define MQTT_TOPIC_RANGE_STATUS		MQTT_RANGE "status"

@@ -37,6 +37,7 @@ void vSystemStart() {
 	iot_sys_restart_queue = xQueueCreate(10, IOT_SYS_QUEUE_SZ);
 	vMqttWaitForConnection();
     vMqttSubscribe(MQTT_TOPIC_RES_CMD, &iot_sys_restart_queue);
+    vMqttSubscribe(MQTT_TOPIC_ALL_RES_CMD, &iot_sys_restart_queue);
     xTaskCreate(&restart_cmd_task, "restart_listen_task", 2048, NULL, 5, NULL);
 	ESP_LOGI(TAG, "Finished");
 }
