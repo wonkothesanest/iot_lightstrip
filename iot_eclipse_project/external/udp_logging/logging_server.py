@@ -32,4 +32,6 @@ print("")
 while True:
 	data, addr = sock.recvfrom(1024)
 	print(addr[0] + ": ",  datetime.datetime.now(), data.decode(), end='')
+	with open('~/esp_logs.log', 'w') as logfile:
+	    logfile.write(addr[0] + ": ",  datetime.datetime.now(), data.decode(), end='')
 
