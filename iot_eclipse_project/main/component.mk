@@ -17,4 +17,4 @@ COMPONENT_SRCDIRS := \
         
 
 # Directive to know where to download the server certificates     
-COMPONENT_EMBED_TXTFILES :=  ${IDF_PATH}/examples/system/ota/server_certs/ca_cert.pem
+COMPONENT_EMBED_TXTFILES :=  /home/dustin/workspace/esp32/iot_lightstrip/iot_eclipse_project/external/certificate_ota/ca_cert.pem
